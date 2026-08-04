@@ -96,6 +96,13 @@ return [
     'services.facilities.title' => 'Fasilitas Penunjang',
     'services.facilities.sub' => 'Fasilitas modern yang mendukung pelayanan medis terbaik bagi pasien dan keluarga.',
 
+    /* ---------- Detail Layanan / Fasilitas ---------- */
+    'detail.back' => 'Kembali',
+    'detail.contact' => 'Hubungi Kami',
+    'detail.related' => 'Selengkapnya',
+    'detail.related_services' => 'Layanan Lainnya',
+    'detail.related_facilities' => 'Fasilitas Lainnya',
+
     /* ---------- Dokter ---------- */
     'doctors.banner' => 'Dokter Kami',
     'doctors.eyebrow' => 'Dokter Kami',

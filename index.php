@@ -131,11 +131,11 @@ include __DIR__ . '/includes/header.php';
     <div class="row g-4 mt-3">
       <?php foreach ($services as $svc): ?>
       <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$svc['sort'] % 4) * 80 ?>">
-        <div class="icon-card">
+        <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=service&id=' . $svc['id'])) ?>">
           <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
           <h5><?= e($svc['title']) ?></h5>
           <p><?= e($svc['description']) ?></p>
-        </div>
+        </a>
       </div>
       <?php endforeach; ?>
     </div>
@@ -153,11 +153,11 @@ include __DIR__ . '/includes/header.php';
     <div class="row g-4 mt-3">
       <?php foreach ($facilities as $fac): ?>
       <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$fac['sort'] % 4) * 80 ?>">
-        <div class="icon-card">
+        <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=facility&id=' . $fac['id'])) ?>">
           <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>
           <h5><?= e($fac['title']) ?></h5>
           <p><?= e($fac['description']) ?></p>
-        </div>
+        </a>
       </div>
       <?php endforeach; ?>
     </div>

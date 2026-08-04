@@ -31,12 +31,12 @@ include __DIR__ . '/includes/sections/page_banner.php';
       <?php foreach ($services as $svc): ?>
       <?php $sImg = $svc['image'] ? img_url('services', $svc['image']) : ''; ?>
       <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$svc['sort'] % 4) * 80 ?>">
-        <div class="icon-card">
+        <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=service&id=' . $svc['id'])) ?>">
           <?php if ($sImg): ?><img src="<?= e($sImg) ?>" alt="<?= e($svc['title']) ?>" class="rounded-4 mb-3" style="width:100%;height:120px;object-fit:cover"><?php endif; ?>
           <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
           <h5><?= e($svc['title']) ?></h5>
           <p><?= e($svc['description']) ?></p>
-        </div>
+        </a>
       </div>
       <?php endforeach; ?>
     </div>
@@ -55,12 +55,12 @@ include __DIR__ . '/includes/sections/page_banner.php';
       <?php foreach ($facilities as $fac): ?>
       <?php $fImg = $fac['image'] ? img_url('facilities', $fac['image']) : ''; ?>
       <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$fac['sort'] % 4) * 80 ?>">
-        <div class="icon-card">
+        <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=facility&id=' . $fac['id'])) ?>">
           <?php if ($fImg): ?><img src="<?= e($fImg) ?>" alt="<?= e($fac['title']) ?>" class="rounded-4 mb-3" style="width:100%;height:120px;object-fit:cover"><?php endif; ?>
           <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>
           <h5><?= e($fac['title']) ?></h5>
           <p><?= e($fac['description']) ?></p>
-        </div>
+        </a>
       </div>
       <?php endforeach; ?>
     </div>

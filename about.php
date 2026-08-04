@@ -86,10 +86,10 @@ include __DIR__ . '/includes/sections/page_banner.php';
         <div class="row g-3">
           <?php foreach ($facilities as $i => $fac): ?>
           <div class="col-md-6">
-            <div class="d-flex align-items-center gap-2 p-3 rounded-4 border surface-card h-100" style="border-color:var(--border)!important">
+            <a href="<?= e(base_url('detail.php?type=facility&id=' . $fac['id'])) ?>" class="d-flex align-items-center gap-2 p-3 rounded-4 border surface-card h-100 text-decoration-none" style="border-color:var(--border)!important;color:inherit">
               <span class="icon-wrap" style="width:44px;height:44px;font-size:1.2rem"><i class="<?= e($fac['icon'] ?: 'bi bi-check-circle-fill') ?>"></i></span>
               <span class="fw-bold"><?= e($fac['title']) ?></span>
-            </div>
+            </a>
           </div>
           <?php endforeach; ?>
         </div>

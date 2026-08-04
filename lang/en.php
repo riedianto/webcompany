@@ -96,6 +96,13 @@ return [
     'services.facilities.title' => 'Supporting Facilities',
     'services.facilities.sub' => 'Modern facilities that support the best medical care for patients and their families.',
 
+    /* ---------- Service / Facility Detail ---------- */
+    'detail.back' => 'Back',
+    'detail.contact' => 'Contact Us',
+    'detail.related' => 'More',
+    'detail.related_services' => 'Other Services',
+    'detail.related_facilities' => 'Other Facilities',
+
     /* ---------- Doctors ---------- */
     'doctors.banner' => 'Our Doctors',
     'doctors.eyebrow' => 'Our Doctors',

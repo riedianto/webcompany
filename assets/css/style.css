@@ -327,6 +327,14 @@ a { text-decoration: none; }
 .icon-card h5 { font-size: 1.05rem; margin-bottom: 0.6rem; }
 .icon-card p { color: var(--muted); font-size: 0.92rem; margin-bottom: 0; }
 
+/* ---------- Icon card as link ---------- */
+a.icon-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+a.icon-card-link:hover { color: inherit; }
+
 /* ---------- Doctor cards ---------- */
 .doc-card {
   background: var(--surface);
