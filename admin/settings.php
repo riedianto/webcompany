@@ -7,7 +7,7 @@ $pageTitle = 'Pengaturan Website';
 $section = 'settings';
 $breadcrumbs = [['label' => 'Pengaturan Website', 'url' => '']];
 
-$logoSettings = ['site_logo' => 'logos', 'site_favicon' => 'logos', 'home_about_image' => 'general'];
+$logoSettings = ['site_logo' => 'logos', 'site_favicon' => 'logos', 'home_about_image' => 'general', 'banner_default_image' => 'general'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -54,6 +54,7 @@ include __DIR__ . '/layout/header.php';
 $logoVal = setting('site_logo');
 $faviconVal = setting('site_favicon');
 $homeImg = setting('home_about_image');
+$bannerVal = setting('banner_default_image');
 ?>
 
 <div class="row">
@@ -110,6 +111,12 @@ $homeImg = setting('home_about_image');
                 <img id="previewFavicon" class="img-preview-sm mt-2 <?= $faviconVal ? '' : 'd-none' ?>" src="<?= $faviconVal ? e(img_url('logos', $faviconVal)) : '' ?>" alt="Favicon">
               </div>
             </div>
+          </div>
+          <div class="form-group">
+            <label>Gambar Banner Halaman</label>
+            <input type="file" name="banner_default_image" class="form-control-file" data-preview="#previewBannerImg" accept="image/*">
+            <img id="previewBannerImg" class="img-preview mt-2 <?= $bannerVal ? '' : 'd-none' ?>" src="<?= $bannerVal ? e(img_url('general', $bannerVal)) : '' ?>" alt="Banner Halaman">
+            <small class="icon-helper">Gambar latar untuk banner di bagian atas semua halaman (selain beranda). Kosongkan untuk memakai gradient bawaan. Disarankan lebar 1600px.</small>
           </div>
         </div>
       </div>

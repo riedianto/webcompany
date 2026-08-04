@@ -32,7 +32,7 @@ $favicon   = setting('site_favicon') ? img_url('logos', setting('site_favicon'))
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap/css/bootstrap.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap-icons/bootstrap-icons.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/aos/aos.css')) ?>">
-<link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>">
+<link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=2">
 <style>
   :root {
     --primary: <?= e($primary) ?>;

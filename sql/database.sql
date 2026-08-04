@@ -191,6 +191,7 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('stat_doctors', '48'),
 ('stat_departments', '32'),
 ('home_about_image', ''),
+('banner_default_image', ''),
 ('home_about_title', 'Selamat Datang di RSU Artha Medica'),
 ('home_about_text', 'Sejak tahun 2000, RSU Artha Medica telah melayani masyarakat dengan pelayanan kesehatan yang ramah, profesional, dan terjangkau. Kami terus berinovasi dengan teknologi medis terbaru untuk memberikan perawatan terbaik bagi pasien.');
 
