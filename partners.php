@@ -10,6 +10,7 @@ $partners = db_all('SELECT * FROM partners WHERE active = 1 ORDER BY sort ASC');
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('partners.banner');
+$bannerBg = setting('banner_partners') ? img_url('general', setting('banner_partners')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.information'), 'url' => ''],

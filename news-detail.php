@@ -18,6 +18,7 @@ $categories = db_all('SELECT * FROM categories ORDER BY name ASC');
 include __DIR__ . '/includes/header.php';
 
 $pImg = $post['image'] ? img_url('posts', $post['image']) : base_url('assets/img/post-placeholder.svg');
+$bannerBg = $post['image'] ? img_url('posts', $post['image']) : '';
 
 $bannerTitle = t('newsdetail.banner');
 $crumbs = [

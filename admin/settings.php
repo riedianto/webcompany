@@ -7,7 +7,19 @@ $pageTitle = 'Pengaturan Website';
 $section = 'settings';
 $breadcrumbs = [['label' => 'Pengaturan Website', 'url' => '']];
 
-$logoSettings = ['site_logo' => 'logos', 'site_favicon' => 'logos', 'home_about_image' => 'general', 'banner_default_image' => 'general'];
+$logoSettings = [
+    'site_logo' => 'logos',
+    'site_favicon' => 'logos',
+    'home_about_image' => 'general',
+    'banner_default_image' => 'general',
+    'banner_about' => 'general',
+    'banner_services' => 'general',
+    'banner_doctors' => 'general',
+    'banner_news' => 'general',
+    'banner_careers' => 'general',
+    'banner_partners' => 'general',
+    'banner_contact' => 'general',
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -113,10 +125,10 @@ $bannerVal = setting('banner_default_image');
             </div>
           </div>
           <div class="form-group">
-            <label>Gambar Banner Halaman</label>
+            <label>Banner Default (fallback)</label>
             <input type="file" name="banner_default_image" class="form-control-file" data-preview="#previewBannerImg" accept="image/*">
-            <img id="previewBannerImg" class="img-preview mt-2 <?= $bannerVal ? '' : 'd-none' ?>" src="<?= $bannerVal ? e(img_url('general', $bannerVal)) : '' ?>" alt="Banner Halaman">
-            <small class="icon-helper">Gambar latar untuk banner di bagian atas semua halaman (selain beranda). Kosongkan untuk memakai gradient bawaan. Disarankan lebar 1600px.</small>
+            <img id="previewBannerImg" class="img-preview mt-2 <?= $bannerVal ? '' : 'd-none' ?>" src="<?= $bannerVal ? e(img_url('general', $bannerVal)) : '' ?>" alt="Banner Default">
+            <small class="icon-helper">Gambar latar banner yang dipakai bila suatu halaman belum punya banner khusus (lihat kartu "Banner per Halaman"). Kosongkan untuk memakai gradient bawaan.</small>
           </div>
         </div>
       </div>
@@ -254,6 +266,35 @@ $bannerVal = setting('banner_default_image');
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title"><i class="fas fa-image mr-2 text-primary"></i>Banner per Halaman</h3></div>
+        <div class="card-body">
+          <?php
+          $bannerPages = [
+              'banner_about' => 'Tentang Kami',
+              'banner_services' => 'Layanan',
+              'banner_doctors' => 'Dokter',
+              'banner_news' => 'Berita',
+              'banner_careers' => 'Karir',
+              'banner_partners' => 'Rekanan Kerjasama',
+              'banner_contact' => 'Kontak',
+          ];
+          ?>
+          <div class="row">
+            <?php foreach ($bannerPages as $key => $label): $val = setting($key); ?>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label><?= e($label) ?></label>
+                <input type="file" name="<?= e($key) ?>" class="form-control-file" data-preview="#preview-<?= e($key) ?>" accept="image/*">
+                <img id="preview-<?= e($key) ?>" class="img-preview mt-2 <?= $val ? '' : 'd-none' ?>" src="<?= $val ? e(img_url('general', $val)) : '' ?>" alt="<?= e($label) ?>">
+              </div>
+            </div>
+            <?php endforeach; ?>
+          </div>
+          <p class="icon-helper mb-0 mt-2">Halaman detail (Profil Dokter &amp; Detail Artikel) otomatis memakai gambar dokter/artikelnya sebagai banner. Halaman tanpa gambar memakai Banner Default (fallback).</p>
         </div>
       </div>
 

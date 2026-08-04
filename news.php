@@ -31,6 +31,7 @@ $categories = db_all('SELECT * FROM categories ORDER BY name ASC');
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('news.banner');
+$bannerBg = setting('banner_news') ? img_url('general', setting('banner_news')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('news.banner'), 'url' => ''],

@@ -11,6 +11,7 @@ $closedJobs = db_all("SELECT * FROM careers WHERE status = 'closed' ORDER BY cre
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('careers.banner');
+$bannerBg = setting('banner_careers') ? img_url('general', setting('banner_careers')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.information'), 'url' => ''],

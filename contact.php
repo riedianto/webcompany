@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('contact.banner');
+$bannerBg = setting('banner_contact') ? img_url('general', setting('banner_contact')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.contact'), 'url' => ''],

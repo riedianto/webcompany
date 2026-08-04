@@ -24,6 +24,7 @@ $docSchedules = get_schedules_map(array_column($doctors, 'id'));
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('doctors.banner');
+$bannerBg = setting('banner_doctors') ? img_url('general', setting('banner_doctors')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.doctors'), 'url' => ''],

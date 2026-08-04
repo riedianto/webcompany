@@ -24,6 +24,7 @@ $schedComp = schedule_compact($schedules);
 include __DIR__ . '/includes/header.php';
 
 $photo = $doc['photo'] ? img_url('doctors', $doc['photo']) : base_url('assets/img/doctor-placeholder.svg');
+$bannerBg = $doc['photo'] ? img_url('doctors', $doc['photo']) : '';
 
 $bannerTitle = t('doctor.banner');
 $crumbs = [

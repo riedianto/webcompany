@@ -16,6 +16,7 @@ $doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMI
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('nav.about');
+$bannerBg = setting('banner_about') ? img_url('general', setting('banner_about')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.about'), 'url' => ''],

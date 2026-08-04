@@ -11,6 +11,7 @@ $facilities = db_all('SELECT * FROM facilities WHERE active = 1 ORDER BY sort AS
 include __DIR__ . '/includes/header.php';
 
 $bannerTitle = t('nav.services');
+$bannerBg = setting('banner_services') ? img_url('general', setting('banner_services')) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.services'), 'url' => ''],
