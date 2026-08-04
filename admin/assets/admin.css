@@ -1,0 +1,183 @@
+/* ============================================================
+   Admin Panel - Custom Styles (AdminLTE 3.2)
+   ============================================================ */
+
+:root {
+  --accent: #0a7d8c;
+  --accent-dark: #075f6b;
+  --soft: #e6f6f8;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f4f6f9;
+}
+
+/* Sidebar */
+.main-sidebar .sidebar {
+  background: transparent;
+}
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link {
+  color: rgba(255, 255, 255, 0.82);
+}
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.nav-sidebar .nav-link p {
+  font-weight: 600;
+}
+.brand-link {
+  background: rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Cards */
+.card {
+  border-radius: 0.9rem;
+  border: 0;
+  box-shadow: 0 4px 18px rgba(15, 43, 51, 0.06);
+  margin-bottom: 1.25rem;
+}
+.card-header {
+  background: #fff;
+  border-bottom: 1px solid #eef2f5;
+  border-top-left-radius: 0.9rem !important;
+  border-top-right-radius: 0.9rem !important;
+}
+.card-title {
+  font-weight: 700;
+  color: #0f2b33;
+}
+
+/* Buttons */
+.btn-accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-accent:hover, .btn-accent:focus {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+  color: #fff;
+}
+.btn-outline-accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-outline-accent:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Tables */
+.table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7a86;
+  border-bottom-width: 1px;
+  white-space: nowrap;
+}
+.table td {
+  vertical-align: middle;
+}
+
+/* Image previews */
+.img-preview {
+  max-width: 120px;
+  max-height: 84px;
+  border-radius: 0.55rem;
+  object-fit: cover;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+.img-preview-sm {
+  max-width: 74px;
+  max-height: 52px;
+  border-radius: 0.4rem;
+  object-fit: cover;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Badges */
+.badge-soft-success { background: #dff5e8; color: #1d9e5f; }
+.badge-soft-danger  { background: #fde3e3; color: #d64545; }
+.badge-soft-info    { background: var(--soft); color: var(--accent); }
+
+/* Small boxes (dashboard) */
+.small-box {
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(15, 43, 51, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.small-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(15, 43, 51, 0.14);
+}
+.small-box .inner h3 {
+  font-size: 2.1rem;
+  font-weight: 800;
+}
+.small-box .icon > i {
+  font-size: 3.4rem;
+}
+
+/* Forms */
+.form-control, .custom-select, .select2-container .select2-selection--single {
+  border-radius: 0.55rem;
+}
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.2rem rgba(10, 125, 140, 0.15);
+}
+label {
+  font-weight: 600;
+  color: #33475a;
+}
+
+/* Flash */
+#adminFlash {
+  border-radius: 0.8rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Auth login */
+.login-page {
+  background: linear-gradient(135deg, #0b3b44 0%, var(--accent) 60%, #f4a261 130%);
+  min-height: 100vh;
+}
+.login-card {
+  border-radius: 1.25rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  border: 0;
+}
+.login-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* Content */
+.content-header h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #0f2b33;
+}
+
+/* Icon picker hint */
+.icon-helper {
+  font-size: 0.78rem;
+  color: #6b7a86;
+}
+
+hr.sep {
+  border-top: 1px solid #eef2f5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #f1f5f6; }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--accent), #f4a261); border-radius: 8px; }
