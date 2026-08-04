@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'site_announcement', 'home_about_title', 'home_about_text',
         'stat_years', 'stat_patients', 'stat_doctors', 'stat_departments',
         'contact_subjects', 'register_url',
+        'reply_email_template', 'reply_wa_template',
     ];
 
     foreach ($textFields as $key) {
@@ -295,6 +296,21 @@ $bannerVal = setting('banner_default_image');
             <?php endforeach; ?>
           </div>
           <p class="icon-helper mb-0 mt-2">Halaman detail (Profil Dokter &amp; Detail Artikel) otomatis memakai gambar dokter/artikelnya sebagai banner. Halaman tanpa gambar memakai Banner Default (fallback).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title"><i class="fas fa-reply mr-2 text-primary"></i>Template Balasan (Pesan Masuk)</h3></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Template Email (Gmail)</label>
+            <textarea name="reply_email_template" class="form-control" rows="6"><?= e(setting('reply_email_template', default_reply_email_template())) ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Template WhatsApp</label>
+            <textarea name="reply_wa_template" class="form-control" rows="4"><?= e(setting('reply_wa_template', default_reply_wa_template())) ?></textarea>
+          </div>
+          <p class="icon-helper mb-0">Placeholder yang bisa dipakai: <code>{nama}</code> (nama pengirim), <code>{subjek}</code> (subjek pesan), <code>{pesan}</code> (isi pesan), <code>{site}</code> (nama website), <code>{email}</code> (email website), <code>{telp}</code> (telepon website).</p>
         </div>
       </div>
 

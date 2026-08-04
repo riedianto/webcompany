@@ -56,7 +56,12 @@ include __DIR__ . '/layout/header.php';
     <hr class="sep">
     <div style="white-space:pre-wrap;line-height:1.7"><?= e($view['message']) ?></div>
     <div class="mt-4">
-      <a href="mailto:<?= e($view['email']) ?>" class="btn btn-accent btn-sm"><i class="fas fa-reply mr-1"></i>Balas via Email</a>
+      <?php if ($view['email']): ?>
+      <a href="<?= e(gmail_reply_url($view['email'], 'Re: ' . ($view['subject'] ?: 'Pesan dari Website'), apply_reply_template(reply_email_template(), ['nama' => $view['name'], 'subjek' => $view['subject'] ?: '', 'pesan' => $view['message']]))) ?>" target="_blank" rel="noopener" class="btn btn-accent btn-sm"><i class="fab fa-google mr-1"></i>Balas via Gmail</a>
+      <?php endif; ?>
+      <?php if ($view['phone']): ?>
+      <a href="<?= e(wa_reply_url($view['phone'], apply_reply_template(reply_wa_template(), ['nama' => $view['name'], 'subjek' => $view['subject'] ?: '', 'pesan' => $view['message']]))) ?>" target="_blank" rel="noopener" class="btn btn-success btn-sm"><i class="fab fa-whatsapp mr-1"></i>Balas via WhatsApp</a>
+      <?php endif; ?>
     </div>
   </div>
 </div>
@@ -89,6 +94,12 @@ include __DIR__ . '/layout/header.php';
             <td class="small text-muted"><?= e($m['email'] ?: $m['phone']) ?></td>
             <td class="small text-muted"><?= e(format_date_id($m['created_at'])) ?></td>
             <td class="text-right">
+              <?php if ($m['email']): ?>
+              <a href="<?= e(gmail_reply_url($m['email'], 'Re: ' . ($m['subject'] ?: 'Pesan dari Website'), apply_reply_template(reply_email_template(), ['nama' => $m['name'], 'subjek' => $m['subject'] ?: '', 'pesan' => $m['message']]))) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary" title="Balas via Gmail"><i class="fab fa-google"></i></a>
+              <?php endif; ?>
+              <?php if ($m['phone']): ?>
+              <a href="<?= e(wa_reply_url($m['phone'], apply_reply_template(reply_wa_template(), ['nama' => $m['name'], 'subjek' => $m['subject'] ?: '', 'pesan' => $m['message']]))) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-success" title="Balas via WhatsApp"><i class="fab fa-whatsapp"></i></a>
+              <?php endif; ?>
               <a href="messages.php?view=<?= $m['id'] ?>" class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
               <form method="post" class="d-inline">
                 <?= csrf_field() ?>

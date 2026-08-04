@@ -318,6 +318,63 @@ function delete_uploaded(string $subdir, ?string $file): void
     }
 }
 
+/* ============================ REPLY HELPERS ============================ */
+
+function default_reply_email_template(): string
+{
+    return "Halo {nama},\r\n\r\nTerima kasih telah menghubungi {site}. Pesan Anda dengan subjek \"{subjek}\" sudah kami terima dan akan segera kami tindak lanjuti.\r\n\r\nHormat kami,\r\nTim {site}\r\n{email} | {telp}";
+}
+
+function default_reply_wa_template(): string
+{
+    return 'Halo {nama}, terima kasih sudah menghubungi {site}. Pesan Anda tentang "{subjek}" telah kami terima dan akan segera kami tindak lanjuti.';
+}
+
+function reply_email_template(): string
+{
+    return setting('reply_email_template', default_reply_email_template());
+}
+
+function reply_wa_template(): string
+{
+    return setting('reply_wa_template', default_reply_wa_template());
+}
+
+function apply_reply_template(string $template, array $data): string
+{
+    $placeholders = [
+        '{nama}'  => (string)($data['nama'] ?? ''),
+        '{subjek}' => (string)($data['subjek'] ?? ''),
+        '{pesan}' => (string)($data['pesan'] ?? ''),
+        '{site}'  => setting('site_name'),
+        '{email}' => setting('site_email'),
+        '{telp}'  => setting('site_phone'),
+    ];
+    return strtr($template, $placeholders);
+}
+
+function normalize_wa_number(string $phone): string
+{
+    $phone = (string)preg_replace('/\D+/', '', $phone);
+    if ($phone !== '' && $phone[0] === '0') {
+        $phone = '62' . substr($phone, 1);
+    }
+    return $phone;
+}
+
+function gmail_reply_url(string $to, string $subject, string $body): string
+{
+    return 'https://mail.google.com/mail/?view=cm&fs=1'
+        . '&to=' . rawurlencode($to)
+        . '&su=' . rawurlencode($subject)
+        . '&body=' . rawurlencode($body);
+}
+
+function wa_reply_url(string $phone, string $text): string
+{
+    return 'https://wa.me/' . normalize_wa_number($phone) . '?text=' . rawurlencode($text);
+}
+
 /* ============================ DOCTOR SCHEDULE ============================ */
 
 function doctor_days(): array
