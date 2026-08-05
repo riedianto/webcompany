@@ -32,12 +32,53 @@ $favicon   = setting('site_favicon') ? img_url('logos', setting('site_favicon'))
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap/css/bootstrap.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap-icons/bootstrap-icons.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/aos/aos.css')) ?>">
-<link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=4">
+<link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=6">
 <style>
   :root {
     --primary: <?= e($primary) ?>;
     --secondary: <?= e($secondary) ?>;
     --primary-dark: <?= e($primary) ?>;
+    <?php if ($headerColor = setting('site_header_color')): ?>
+    --navbar-bg: <?= e($headerColor) ?>;
+    --navbar-bg-solid: <?= e($headerColor) ?>;
+    --topbar-bg: <?= e($headerColor) ?>;
+    <?php
+    $hc = ltrim($headerColor, '#');
+    if (strlen($hc) === 3) {
+        $hc = preg_replace('/(.)/', '$1$1', $hc);
+    }
+    if (strlen($hc) === 6) {
+        $hr = hexdec(substr($hc, 0, 2));
+        $hg = hexdec(substr($hc, 2, 2));
+        $hb = hexdec(substr($hc, 4, 2));
+        $lightHeader = (0.299 * $hr + 0.587 * $hg + 0.114 * $hb) > 150;
+    } else {
+        $lightHeader = false;
+    }
+    if ($lightHeader) {
+        $topTxt = '#004080';
+        $topHover = '#00a8cc';
+        $topBtn = '#004080';
+        $topBorder = 'rgba(0,64,128,0.35)';
+        $topDivider = 'rgba(0,64,128,0.25)';
+    } else {
+        $topTxt = '#cfe9ee';
+        $topHover = '#ffffff';
+        $topBtn = '#ffffff';
+        $topBorder = 'rgba(255,255,255,0.35)';
+        $topDivider = 'rgba(255,255,255,0.25)';
+    }
+    ?>
+    --topbar-text: <?= $topTxt ?>;
+    --topbar-link: <?= $topTxt ?>;
+    --topbar-hover: <?= $topHover ?>;
+    --topbar-btn-border: <?= $topBorder ?>;
+    --topbar-btn-active: <?= $topBtn ?>;
+    --topbar-divider: <?= $topDivider ?>;
+    <?php endif; ?>
+    <?php if ($footerColor = setting('site_footer_color')): ?>
+    --footer-bg: <?= e($footerColor) ?>;
+    <?php endif; ?>
   }
 </style>
 </head>

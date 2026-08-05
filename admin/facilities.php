@@ -9,8 +9,12 @@ $breadcrumbs = [['label' => 'Fasilitas', 'url' => '']];
 
 $id = (int)($_GET['id'] ?? 0);
 $edit = null;
+$facImages = [];
 if ($id > 0 && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     $edit = db_one('SELECT * FROM facilities WHERE id = ?', [$id]);
+    if ($edit) {
+        $facImages = db_all('SELECT * FROM facility_images WHERE facility_id = ? ORDER BY sort ASC, id ASC', [$id]);
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -22,8 +26,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $row = db_one('SELECT * FROM facilities WHERE id = ?', [$rid]);
         if ($row) {
             delete_uploaded('facilities', $row['image']);
+            foreach (db_all('SELECT * FROM facility_images WHERE facility_id = ?', [$rid]) as $fi) {
+                delete_uploaded('facilities', $fi['image']);
+            }
             db_exec('DELETE FROM facilities WHERE id = ?', [$rid]);
             flash('success', 'Fasilitas berhasil dihapus.');
+        }
+        redirect(base_url('admin/facilities.php'));
+    }
+
+    if ($action === 'delete_image') {
+        $imgId = (int)($_POST['image_id'] ?? 0);
+        $row = db_one('SELECT * FROM facility_images WHERE id = ?', [$imgId]);
+        if ($row) {
+            delete_uploaded('facilities', $row['image']);
+            db_exec('DELETE FROM facility_images WHERE id = ?', [$imgId]);
+            flash('success', 'Gambar slide berhasil dihapus.');
+            redirect(base_url('admin/facilities.php?id=' . (int)$row['facility_id']));
         }
         redirect(base_url('admin/facilities.php'));
     }
@@ -45,11 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($rid > 0) {
                 db_exec('UPDATE facilities SET title = ?, icon = ?, description = ?, image = ?, sort = ?, active = ? WHERE id = ?',
                     [$title, $icon, $description, $up['file'], $sort, $active, $rid]);
+                $targetId = $rid;
                 flash('success', 'Fasilitas berhasil diperbarui.');
             } else {
                 db_exec('INSERT INTO facilities (title, icon, description, image, sort, active) VALUES (?, ?, ?, ?, ?, ?)',
                     [$title, $icon, $description, $up['file'], $sort, $active]);
+                $targetId = (int)db()->lastInsertId();
                 flash('success', 'Fasilitas berhasil ditambahkan.');
+            }
+
+            $upMany = upload_images('images', 'facilities');
+            if ($upMany['files']) {
+                $maxSort = (int)(db_one('SELECT COALESCE(MAX(sort), 0) AS m FROM facility_images WHERE facility_id = ?', [$targetId])['m'] ?? 0);
+                foreach ($upMany['files'] as $mi => $fn) {
+                    db_exec('INSERT INTO facility_images (facility_id, image, sort) VALUES (?, ?, ?)', [$targetId, $fn, $maxSort + $mi + 1]);
+                }
+            }
+            if ($upMany['errors']) {
+                flash('error', implode(' ', $upMany['errors']));
             }
             redirect(base_url('admin/facilities.php'));
         }
@@ -87,7 +119,33 @@ include __DIR__ . '/layout/header.php';
             <input type="file" name="image" class="form-control-file" data-preview="#previewImg" accept="image/*">
             <?php $img = $edit['image'] ?? ''; ?>
             <img id="previewImg" class="img-preview mt-2 <?= $img ? '' : 'd-none' ?>" src="<?= $img ? e(img_url('facilities', $img)) : '' ?>" alt="Preview">
+            <small class="icon-helper">Gambar utama / sampul fasilitas.</small>
           </div>
+          <div class="form-group">
+            <label>Gambar Slide (tambah beberapa)</label>
+            <input type="file" name="images[]" class="form-control-file" multiple accept="image/*">
+            <small class="icon-helper">Pilih satu atau beberapa gambar sekaligus. Semua gambar tampil sebagai slide show di halaman detail fasilitas.</small>
+          </div>
+          <?php if ($facImages): ?>
+          <div class="form-group">
+            <label>Slide Saat Ini</label>
+            <div class="row g-2">
+              <?php foreach ($facImages as $fi): ?>
+              <div class="col-4">
+                <div class="position-relative">
+                  <img src="<?= e(img_url('facilities', $fi['image'])) ?>" class="img-thumbnail" style="width:100%;height:80px;object-fit:cover;border-radius:0.6rem" alt="Slide">
+                  <form method="post" class="position-absolute" style="top:4px;right:4px">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="delete_image">
+                    <input type="hidden" name="image_id" value="<?= (int)$fi['id'] ?>">
+                    <button type="submit" class="btn btn-sm btn-danger js-confirm" data-confirm="Hapus gambar slide ini?"><i class="fas fa-times"></i></button>
+                  </form>
+                </div>
+              </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+          <?php endif; ?>
           <div class="row">
             <div class="col-6">
               <div class="form-group">

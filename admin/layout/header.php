@@ -128,6 +128,11 @@ $logo = setting('site_logo') ? img_url('logos', setting('site_logo')) : base_url
             </a>
           </li>
           <li class="nav-item">
+            <a href="gallery.php" class="nav-link <?= $section === 'gallery' ? 'active' : '' ?>">
+              <i class="nav-icon fas fa-camera"></i><p>Galeri</p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="messages.php" class="nav-link <?= $section === 'messages' ? 'active' : '' ?>">
               <i class="nav-icon fas fa-envelope"></i><p>Pesan Masuk</p>
             </a>

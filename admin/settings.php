@@ -46,6 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (preg_match('/^#[0-9a-fA-F]{6}$/', $secondary)) {
         save_setting('site_secondary_color', $secondary);
     }
+    $headerColor = trim((string)($_POST['site_header_color'] ?? ''));
+    if (preg_match('/^#[0-9a-fA-F]{6}$/', $headerColor)) {
+        save_setting('site_header_color', $headerColor);
+    }
+    $footerColor = trim((string)($_POST['site_footer_color'] ?? ''));
+    if (preg_match('/^#[0-9a-fA-F]{6}$/', $footerColor)) {
+        save_setting('site_footer_color', $footerColor);
+    }
 
     foreach ($logoSettings as $key => $subdir) {
         if (!empty($_FILES[$key]) && (int)$_FILES[$key]['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -112,12 +120,28 @@ $bannerVal = setting('banner_default_image');
             </div>
             <div class="col-md-4">
               <div class="form-group">
+                <label>Warna Header</label>
+                <input type="color" name="site_header_color" class="form-control form-control-color" style="height:38px" value="<?= e(setting('site_header_color', '#0f2b33')) ?>">
+                <small class="icon-helper">Warna latar navbar &amp; topbar. Bawaan: <code>#0f2b33</code>.</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Warna Footer</label>
+                <input type="color" name="site_footer_color" class="form-control form-control-color" style="height:38px" value="<?= e(setting('site_footer_color', '#0f2b33')) ?>">
+                <small class="icon-helper">Warna latar footer. Bawaan: <code>#0f2b33</code>.</small>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
                 <label>Logo Rumah Sakit</label>
                 <input type="file" name="site_logo" class="form-control-file" data-preview="#previewLogo" accept="image/*">
                 <img id="previewLogo" class="img-preview mt-2 <?= $logoVal ? '' : 'd-none' ?>" src="<?= $logoVal ? e(img_url('logos', $logoVal)) : '' ?>" alt="Logo">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="form-group">
                 <label>Favicon (ikon kecil)</label>
                 <input type="file" name="site_favicon" class="form-control-file" data-preview="#previewFavicon" accept="image/*">
@@ -333,10 +357,19 @@ $bannerVal = setting('banner_default_image');
           <span class="badge badge-soft-info" style="width:80px;height:40px;background:<?= e(setting('site_secondary_color', '#f4a261')) ?>"></span>
           <span>Warna Sekunder</span>
         </div>
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="badge badge-soft-info" style="width:80px;height:40px;background:<?= e(setting('site_header_color', '#0f2b33')) ?>"></span>
+          <span>Warna Header</span>
+        </div>
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="badge badge-soft-info" style="width:80px;height:40px;background:<?= e(setting('site_footer_color', '#0f2b33')) ?>"></span>
+          <span>Warna Footer</span>
+        </div>
         <hr class="sep">
         <p class="icon-helper mb-0">
           Warna utama dipakai untuk menu, tombol, dan aksen website.
           Warna sekunder untuk aksen gradasi dan highlight.
+          Warna header &amp; footer mengatur latar navbar/topbar dan footer.
           Simpan lalu buka website untuk melihat hasilnya.
         </p>
       </div>

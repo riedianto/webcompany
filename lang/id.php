@@ -87,6 +87,8 @@ return [
     'about.team' => 'Tim Kami',
     'about.team.sub' => 'Kenali Dokter Kami',
     'about.fullprofile' => 'Profil Lengkap',
+    'about.gallery' => 'Galeri Kami',
+    'about.gallery.sub' => 'Dokumentasi Kegiatan & Fasilitas',
 
     /* ---------- Fasilitas & Layanan ---------- */
     'services.services.eyebrow' => 'Layanan',
@@ -95,6 +97,7 @@ return [
     'services.facilities.eyebrow' => 'Fasilitas',
     'services.facilities.title' => 'Fasilitas Penunjang',
     'services.facilities.sub' => 'Fasilitas modern yang mendukung pelayanan medis terbaik bagi pasien dan keluarga.',
+    'services.readmore' => 'Selengkapnya',
 
     /* ---------- Detail Layanan / Fasilitas ---------- */
     'detail.back' => 'Kembali',
@@ -102,6 +105,8 @@ return [
     'detail.related' => 'Selengkapnya',
     'detail.related_services' => 'Layanan Lainnya',
     'detail.related_facilities' => 'Fasilitas Lainnya',
+    'detail.service_doctors' => 'Dokter Poli',
+    'detail.service_doctors.sub' => 'Daftar dokter yang praktik di poli ini',
 
     /* ---------- Dokter ---------- */
     'doctors.banner' => 'Dokter Kami',
@@ -110,6 +115,7 @@ return [
     'doctors.sub' => 'Dokter-dokter kami siap memberikan pelayanan terbaik dengan keahlian di bidang masing-masing.',
     'doctors.search_placeholder' => 'Cari nama / spesialisasi...',
     'doctors.search' => 'Cari',
+    'doctors.filter_all' => 'Semua Poli',
     'doctors.viewprofile' => 'Lihat Profil',
     'doctors.empty.title' => 'Tidak ada dokter ditemukan',
     'doctors.empty.sub' => 'Coba kata kunci lain.',

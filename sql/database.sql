@@ -76,6 +76,7 @@ CREATE TABLE doctors (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL,
   specialist VARCHAR(150) DEFAULT NULL,
+  service_id INT DEFAULT NULL,
   photo VARCHAR(255) DEFAULT NULL,
   schedule VARCHAR(255) DEFAULT NULL,
   email VARCHAR(150) DEFAULT NULL,
@@ -95,6 +96,25 @@ CREATE TABLE doctor_schedules (
   end_time TIME DEFAULT NULL,
   UNIQUE KEY uq_doctor_day (doctor_id, day),
   CONSTRAINT fk_schedule_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS gallery;
+CREATE TABLE gallery (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) DEFAULT NULL,
+  image VARCHAR(255) DEFAULT NULL,
+  sort INT DEFAULT 0,
+  active TINYINT(1) DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS facility_images;
+CREATE TABLE facility_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  facility_id INT NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  sort INT DEFAULT 0,
+  CONSTRAINT fk_facimg_facility FOREIGN KEY (facility_id) REFERENCES facilities(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS categories;
@@ -184,6 +204,8 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('site_favicon', ''),
 ('site_primary_color', '#0a7d8c'),
 ('site_secondary_color', '#f4a261'),
+('site_header_color', ''),
+('site_footer_color', ''),
 ('site_announcement', 'Pendaftaran online kini tersedia 24 jam melalui website resmi kami.'),
 ('site_maps', 'https://maps.google.com/maps?q=jakarta%20selatan&t=&z=13&ie=UTF8&iwloc=&output=embed'),
 ('stat_years', '25'),
@@ -246,13 +268,13 @@ INSERT INTO services (title, icon, description, image, sort, active) VALUES
 ('Telemedicine', 'bi bi-laptop', 'Konsultasi dokter secara online dari rumah kapan saja dan di mana saja.', '', 8, 1);
 
 -- Doctors
-INSERT INTO doctors (name, specialist, photo, schedule, email, phone, bio, sort, active) VALUES
-('dr. Ahmad Fauzi, Sp.PD', 'Penyakit Dalam', '', 'Senin - Jumat, 08.00 - 14.00', 'ahmad.fauzi@rsuarthamedica.co.id', '081234567001', 'Spesialis penyakit dalam dengan pengalaman lebih dari 15 tahun, lulusan Fakultas Kedokteran Universitas Indonesia.', 1, 1),
-('dr. Siti Rahma, Sp.A', 'Anak', '', 'Senin - Sabtu, 09.00 - 15.00', 'siti.rahma@rsuarthamedica.co.id', '081234567002', 'Spesialis anak yang ramah dan sabar, berpengalaman menangani berbagai penyakit pada bayi dan anak.', 2, 1),
-('dr. Budi Santoso, Sp.OG', 'Obstetri & Ginekologi', '', 'Selasa - Sabtu, 10.00 - 16.00', 'budi.santoso@rsuarthamedica.co.id', '081234567003', 'Spesialis kandungan dan kebidanan, menangani persalinan normal maupun caesar dengan aman.', 3, 1),
-('dr. Maya Lestari, Sp.JP', 'Jantung & Pembuluh Darah', '', 'Senin - Kamis, 08.00 - 13.00', 'maya.lestari@rsuarthamedica.co.id', '081234567004', 'Kardiolog dengan keahlian dalam diagnosa dan penanganan penyakit jantung koroner.', 4, 1),
-('dr. Rizky Pratama, Sp.S', 'Saraf', '', 'Rabu - Jumat, 09.00 - 14.00', 'rizky.pratama@rsuarthamedica.co.id', '081234567005', 'Neurolog yang berfokus pada penanganan stroke, migrain, dan gangguan saraf lainnya.', 5, 1),
-('drg. Dewi Anggraini', 'Kedokteran Gigi', '', 'Senin - Sabtu, 09.00 - 17.00', 'dewi.anggraini@rsuarthamedica.co.id', '081234567006', 'Dokter gigi dengan layanan perawatan gigi estetik, pembersihan karang gigi, dan kawat gigi.', 6, 1);
+INSERT INTO doctors (name, specialist, service_id, photo, schedule, email, phone, bio, sort, active) VALUES
+('dr. Ahmad Fauzi, Sp.PD', 'Penyakit Dalam', 1, '', 'Senin - Jumat, 08.00 - 14.00', 'ahmad.fauzi@rsuarthamedica.co.id', '081234567001', 'Spesialis penyakit dalam dengan pengalaman lebih dari 15 tahun, lulusan Fakultas Kedokteran Universitas Indonesia.', 1, 1),
+('dr. Siti Rahma, Sp.A', 'Anak', 2, '', 'Senin - Sabtu, 09.00 - 15.00', 'siti.rahma@rsuarthamedica.co.id', '081234567002', 'Spesialis anak yang ramah dan sabar, berpengalaman menangani berbagai penyakit pada bayi dan anak.', 2, 1),
+('dr. Budi Santoso, Sp.OG', 'Obstetri & Ginekologi', 3, '', 'Selasa - Sabtu, 10.00 - 16.00', 'budi.santoso@rsuarthamedica.co.id', '081234567003', 'Spesialis kandungan dan kebidanan, menangani persalinan normal maupun caesar dengan aman.', 3, 1),
+('dr. Maya Lestari, Sp.JP', 'Jantung & Pembuluh Darah', 4, '', 'Senin - Kamis, 08.00 - 13.00', 'maya.lestari@rsuarthamedica.co.id', '081234567004', 'Kardiolog dengan keahlian dalam diagnosa dan penanganan penyakit jantung koroner.', 4, 1),
+('dr. Rizky Pratama, Sp.S', 'Saraf', 6, '', 'Rabu - Jumat, 09.00 - 14.00', 'rizky.pratama@rsuarthamedica.co.id', '081234567005', 'Neurolog yang berfokus pada penanganan stroke, migrain, dan gangguan saraf lainnya.', 5, 1),
+('drg. Dewi Anggraini', 'Kedokteran Gigi', 5, '', 'Senin - Sabtu, 09.00 - 17.00', 'dewi.anggraini@rsuarthamedica.co.id', '081234567006', 'Dokter gigi dengan layanan perawatan gigi estetik, pembersihan karang gigi, dan kawat gigi.', 6, 1);
 
 -- Doctor schedules (per-day): day 0=Senin, 1=Selasa, 2=Rabu, 3=Kamis, 4=Jumat, 5=Sabtu, 6=Minggu
 INSERT INTO doctor_schedules (doctor_id, day, start_time, end_time) VALUES

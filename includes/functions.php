@@ -265,19 +265,63 @@ function upload_image(string $field, string $subdir = 'general', ?string $old = 
         return ['success' => true, 'file' => $old];
     }
 
-    $file = $_FILES[$field];
+    $result = store_upload($_FILES[$field], $subdir);
+    if (!$result['success']) {
+        return ['success' => false, 'file' => $old, 'error' => $result['error']];
+    }
 
+    $name = $result['name'];
+    if ($old && is_file(UPLOAD_DIR . $subdir . DIRECTORY_SEPARATOR . $old)) {
+        @unlink(UPLOAD_DIR . $subdir . DIRECTORY_SEPARATOR . $old);
+    }
+
+    return ['success' => true, 'file' => $name];
+}
+
+function upload_images(string $field, string $subdir = 'general'): array
+{
+    $saved = [];
+    $errors = [];
+    if (empty($_FILES[$field]) || !is_array($_FILES[$field]['name'])) {
+        return ['success' => true, 'files' => $saved, 'errors' => $errors];
+    }
+
+    $count = count($_FILES[$field]['name']);
+    for ($i = 0; $i < $count; $i++) {
+        $file = [
+            'name' => (string)($_FILES[$field]['name'][$i] ?? ''),
+            'type' => (string)($_FILES[$field]['type'][$i] ?? ''),
+            'tmp_name' => (string)($_FILES[$field]['tmp_name'][$i] ?? ''),
+            'error' => (int)($_FILES[$field]['error'][$i] ?? UPLOAD_ERR_NO_FILE),
+            'size' => (int)($_FILES[$field]['size'][$i] ?? 0),
+        ];
+        if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+            continue;
+        }
+        $result = store_upload($file, $subdir);
+        if ($result['success']) {
+            $saved[] = $result['name'];
+        } else {
+            $errors[] = $result['error'];
+        }
+    }
+
+    return ['success' => $errors === [], 'files' => $saved, 'errors' => $errors];
+}
+
+function store_upload(array $file, string $subdir): array
+{
     if ((int)$file['error'] !== UPLOAD_ERR_OK) {
-        return ['success' => false, 'file' => $old, 'error' => 'Terjadi kesalahan saat mengunggah file.'];
+        return ['success' => false, 'name' => null, 'error' => 'Terjadi kesalahan saat mengunggah file.'];
     }
     if ((int)$file['size'] > 5242880) {
-        return ['success' => false, 'file' => $old, 'error' => 'Ukuran file maksimal 5MB.'];
+        return ['success' => false, 'name' => null, 'error' => 'Ukuran file maksimal 5MB.'];
     }
 
     $ext = strtolower((string)pathinfo((string)$file['name'], PATHINFO_EXTENSION));
     $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
     if (!in_array($ext, $allowed, true)) {
-        return ['success' => false, 'file' => $old, 'error' => 'Tipe file tidak diizinkan (JPG, PNG, WEBP, GIF, SVG).'];
+        return ['success' => false, 'name' => null, 'error' => 'Tipe file tidak diizinkan (JPG, PNG, WEBP, GIF, SVG).'];
     }
 
     if (class_exists('finfo')) {
@@ -285,7 +329,7 @@ function upload_image(string $field, string $subdir = 'general', ?string $old = 
         $mime = $finfo->file((string)$file['tmp_name']);
         $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
         if (!in_array((string)$mime, $allowedMime, true)) {
-            return ['success' => false, 'file' => $old, 'error' => 'File bukan merupakan gambar yang valid.'];
+            return ['success' => false, 'name' => null, 'error' => 'File bukan merupakan gambar yang valid.'];
         }
     }
 
@@ -297,14 +341,10 @@ function upload_image(string $field, string $subdir = 'general', ?string $old = 
     $name = date('YmdHis') . '_' . substr(bin2hex(random_bytes(4)), 0, 8) . '.' . $ext;
 
     if (!move_uploaded_file((string)$file['tmp_name'], $dir . DIRECTORY_SEPARATOR . $name)) {
-        return ['success' => false, 'file' => $old, 'error' => 'Gagal menyimpan file.'];
+        return ['success' => false, 'name' => null, 'error' => 'Gagal menyimpan file.'];
     }
 
-    if ($old && is_file($dir . DIRECTORY_SEPARATOR . $old)) {
-        @unlink($dir . DIRECTORY_SEPARATOR . $old);
-    }
-
-    return ['success' => true, 'file' => $name];
+    return ['success' => true, 'name' => $name, 'error' => ''];
 }
 
 function delete_uploaded(string $subdir, ?string $file): void

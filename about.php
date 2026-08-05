@@ -12,6 +12,7 @@ $sejarah = about_section('sejarah');
 
 $facilities = db_all('SELECT * FROM facilities WHERE active = 1 ORDER BY sort ASC LIMIT 6');
 $doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMIT 4');
+$gallery = db_all('SELECT * FROM gallery WHERE active = 1 AND image <> "" ORDER BY sort ASC, id ASC');
 
 include __DIR__ . '/includes/header.php';
 
@@ -118,6 +119,28 @@ include __DIR__ . '/includes/sections/page_banner.php';
             <a class="read-more" href="<?= e(base_url('doctor-detail.php?id=' . $doc['id'])) ?>"><?= e(t('about.fullprofile')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
           </div>
         </div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<?php if ($gallery): ?>
+<!-- Galeri -->
+<section class="section">
+  <div class="container">
+    <div class="text-center" data-aos="fade-up">
+      <span class="section-eyebrow"><?= e(t('about.gallery')) ?></span>
+      <h2 class="section-title"><?= e(t('about.gallery.sub')) ?></h2>
+    </div>
+    <div class="row g-4 mt-3">
+      <?php foreach ($gallery as $gi): ?>
+      <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$gi['id'] % 4) * 80 ?>">
+        <a class="gallery-item" href="<?= e(img_url('gallery', $gi['image'])) ?>" data-caption="<?= e($gi['title'] ?: '') ?>" aria-label="<?= e($gi['title'] ?: 'Galeri') ?>">
+          <img src="<?= e(img_url('gallery', $gi['image'])) ?>" alt="<?= e($gi['title'] ?: 'Galeri') ?>">
+          <?php if ($gi['title']): ?><span class="gallery-caption"><?= e($gi['title']) ?></span><?php endif; ?>
+        </a>
       </div>
       <?php endforeach; ?>
     </div>

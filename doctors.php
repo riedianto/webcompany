@@ -5,9 +5,16 @@ require_once __DIR__ . '/includes/config.php';
 $pageTitle = t('nav.doctors');
 $active = 'doctors';
 
+$services = db_all('SELECT id, title FROM services WHERE active = 1 ORDER BY sort ASC');
+
 $search = trim($_GET['q'] ?? '');
+$poli = (int)($_GET['poli'] ?? 0);
 $params = [];
 $where = 'WHERE active = 1';
+if ($poli > 0) {
+    $where .= ' AND service_id = ?';
+    $params[] = $poli;
+}
 if ($search !== '') {
     $where .= ' AND (name LIKE ? OR specialist LIKE ?)';
     $params[] = "%$search%";
@@ -41,8 +48,16 @@ include __DIR__ . '/includes/sections/page_banner.php';
     </div>
 
     <form method="get" action="<?= e(base_url('doctors.php')) ?>" class="row justify-content-center mb-5 g-2" data-aos="fade-up">
-      <div class="col-md-6 col-lg-5">
+      <div class="col-md-6 col-lg-4">
         <input type="text" name="q" class="form-control" placeholder="<?= e(t('doctors.search_placeholder')) ?>" value="<?= e($search) ?>">
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <select name="poli" class="form-control">
+          <option value="0" <?= selected($poli === 0) ?>><?= e(t('doctors.filter_all')) ?></option>
+          <?php foreach ($services as $svc): ?>
+          <option value="<?= (int)$svc['id'] ?>" <?= selected($poli === (int)$svc['id']) ?>><?= e($svc['title']) ?></option>
+          <?php endforeach; ?>
+        </select>
       </div>
       <div class="col-auto">
         <button class="btn btn-grad" type="submit"><i class="bi bi-search me-1"></i><?= e(t('doctors.search')) ?></button>
@@ -79,8 +94,9 @@ include __DIR__ . '/includes/sections/page_banner.php';
     <nav class="mt-5" aria-label="<?= e(t('doctors.pagination')) ?>">
       <ul class="pagination justify-content-center">
         <?php for ($i = 1; $i <= $result['total_pages']; $i++): ?>
+        <?php $pageQuery = 'page=' . $i . ($search !== '' ? '&q=' . urlencode($search) : '') . ($poli > 0 ? '&poli=' . $poli : ''); ?>
         <li class="page-item <?= $i === $result['page'] ? 'active' : '' ?>">
-          <a class="page-link" href="<?= e(base_url('doctors.php?page=' . $i . ($search ? '&q=' . urlencode($search) : ''))) ?>"><?= $i ?></a>
+          <a class="page-link" href="<?= e(base_url('doctors.php?' . $pageQuery)) ?>"><?= $i ?></a>
         </li>
         <?php endfor; ?>
       </ul>

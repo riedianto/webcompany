@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim((string)($_POST['name'] ?? ''));
     $specialist = trim((string)($_POST['specialist'] ?? ''));
+    $serviceId = (int)($_POST['service_id'] ?? 0);
     $email = trim((string)($_POST['email'] ?? ''));
     $phone = trim((string)($_POST['phone'] ?? ''));
     $bio = trim((string)($_POST['bio'] ?? ''));
@@ -55,13 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', $up['error']);
         } else {
             if ($rid > 0) {
-                db_exec('UPDATE doctors SET name = ?, specialist = ?, photo = ?, email = ?, phone = ?, bio = ?, sort = ?, active = ? WHERE id = ?',
-                    [$name, $specialist, $up['file'], $email, $phone, $bio, $sort, $active, $rid]);
+                db_exec('UPDATE doctors SET name = ?, specialist = ?, service_id = ?, photo = ?, email = ?, phone = ?, bio = ?, sort = ?, active = ? WHERE id = ?',
+                    [$name, $specialist, $serviceId, $up['file'], $email, $phone, $bio, $sort, $active, $rid]);
                 save_doctor_schedules($rid, $schedStart, $schedEnd);
                 flash('success', 'Dokter berhasil diperbarui.');
             } else {
-                db_exec('INSERT INTO doctors (name, specialist, photo, email, phone, bio, sort, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [$name, $specialist, $up['file'], $email, $phone, $bio, $sort, $active]);
+                db_exec('INSERT INTO doctors (name, specialist, service_id, photo, email, phone, bio, sort, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [$name, $specialist, $serviceId, $up['file'], $email, $phone, $bio, $sort, $active]);
                 save_doctor_schedules((int)db()->lastInsertId(), $schedStart, $schedEnd);
                 flash('success', 'Dokter berhasil ditambahkan.');
             }
@@ -72,6 +73,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $rows = db_all('SELECT * FROM doctors ORDER BY sort ASC, id ASC');
 $schedMapList = get_schedules_map(array_column($rows, 'id'));
+$services = db_all('SELECT * FROM services ORDER BY sort ASC, id ASC');
+$serviceMap = [];
+foreach ($services as $svc) {
+    $serviceMap[(int)$svc['id']] = $svc['title'];
+}
 
 include __DIR__ . '/layout/header.php';
 ?>
@@ -95,6 +101,16 @@ include __DIR__ . '/layout/header.php';
           <div class="form-group">
             <label>Spesialisasi</label>
             <input type="text" name="specialist" class="form-control" value="<?= e($edit['specialist'] ?? '') ?>" placeholder="Penyakit Dalam">
+          </div>
+          <div class="form-group">
+            <label>Layanan / Poli</label>
+            <select name="service_id" class="form-control">
+              <option value="0">— Tidak terhubung ke poli —</option>
+              <?php foreach ($services as $svc): ?>
+              <option value="<?= (int)$svc['id'] ?>" <?= selected((int)($edit['service_id'] ?? 0) === (int)$svc['id']) ?>><?= e($svc['title']) ?></option>
+              <?php endforeach; ?>
+            </select>
+            <small class="icon-helper">Poli tempat dokter ini praktik. Daftar dokter akan tampil di halaman layanan sesuai pilihan ini.</small>
           </div>
           <div class="form-group">
             <label>Foto</label>
@@ -168,7 +184,7 @@ include __DIR__ . '/layout/header.php';
         <?php if ($rows): ?>
         <div class="table-responsive">
           <table class="table table-hover mb-0">
-            <thead><tr><th>Foto</th><th>Nama</th><th>Spesialisasi</th><th>Jadwal</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
+            <thead><tr><th>Foto</th><th>Nama</th><th>Spesialisasi</th><th>Poli</th><th>Jadwal</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
             <tbody>
               <?php foreach ($rows as $r): ?>
               <?php $rPhoto = $r['photo'] ? img_url('doctors', $r['photo']) : base_url('assets/img/doctor-placeholder.svg'); ?>
@@ -177,6 +193,7 @@ include __DIR__ . '/layout/header.php';
                 <td><img src="<?= e($rPhoto) ?>" class="img-preview-sm rounded-circle" alt=""></td>
                 <td class="font-weight-bold"><?= e($r['name']) ?></td>
                 <td><?= e($r['specialist']) ?></td>
+                <td><?= isset($serviceMap[(int)$r['service_id']]) ? e($serviceMap[(int)$r['service_id']]) : '<span class="text-muted">-</span>' ?></td>
                 <td class="text-muted small"><?= $rSched !== '' ? e($rSched) : '-' ?></td>
                 <td>
                   <?php if ((int)$r['active'] === 1): ?><span class="badge badge-soft-success">Aktif</span>

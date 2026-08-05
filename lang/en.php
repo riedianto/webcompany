@@ -87,6 +87,8 @@ return [
     'about.team' => 'Our Team',
     'about.team.sub' => 'Meet Our Doctors',
     'about.fullprofile' => 'Full Profile',
+    'about.gallery' => 'Our Gallery',
+    'about.gallery.sub' => 'Documentation of Activities & Facilities',
 
     /* ---------- Facilities & Services ---------- */
     'services.services.eyebrow' => 'Services',
@@ -95,6 +97,7 @@ return [
     'services.facilities.eyebrow' => 'Facilities',
     'services.facilities.title' => 'Supporting Facilities',
     'services.facilities.sub' => 'Modern facilities that support the best medical care for patients and their families.',
+    'services.readmore' => 'View Details',
 
     /* ---------- Service / Facility Detail ---------- */
     'detail.back' => 'Back',
@@ -102,6 +105,8 @@ return [
     'detail.related' => 'More',
     'detail.related_services' => 'Other Services',
     'detail.related_facilities' => 'Other Facilities',
+    'detail.service_doctors' => 'Clinic Doctors',
+    'detail.service_doctors.sub' => 'List of doctors practicing at this clinic',
 
     /* ---------- Doctors ---------- */
     'doctors.banner' => 'Our Doctors',
@@ -110,6 +115,7 @@ return [
     'doctors.sub' => 'Our doctors are ready to provide the best care with expertise in their respective fields.',
     'doctors.search_placeholder' => 'Search name / specialization...',
     'doctors.search' => 'Search',
+    'doctors.filter_all' => 'All Clinics',
     'doctors.viewprofile' => 'View Profile',
     'doctors.empty.title' => 'No doctors found',
     'doctors.empty.sub' => 'Try another keyword.',

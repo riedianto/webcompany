@@ -55,6 +55,24 @@ declare(strict_types=1);
 
 <button id="backToTop" aria-label="<?= e(t('footer.backtotop')) ?>"><i class="bi bi-arrow-up"></i></button>
 
+<div class="modal fade gallery-lightbox" id="galleryLightbox" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="galleryLbTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0 position-relative">
+        <img id="galleryLbImage" src="" alt="">
+        <div class="gallery-lb-controls">
+          <button type="button" class="btn btn-light" id="galleryLbPrev" aria-label="<?= e(t('hero.prev')) ?>"><i class="bi bi-chevron-left"></i></button>
+          <button type="button" class="btn btn-light" id="galleryLbNext" aria-label="<?= e(t('hero.next')) ?>"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="<?= e(base_url('assets/vendor/aos/js/aos.js')) ?>"></script>
 <script src="<?= e(base_url('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')) ?>"></script>
 <script src="<?= e(base_url('assets/js/main.js')) ?>"></script>
