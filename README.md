@@ -27,7 +27,7 @@ Website company profile rumah sakit dengan panel admin lengkap. Dibangun dengan 
 
 ## Instalasi Lokal (XAMPP)
 
-1. **Letakkan folder proyek** di `C:\xampp\htdocs\webcompany` (nama folder bebas).
+1. **Letakkan folder proyek** di `C:\xampp\htdocs\rsuarthamedica` (nama folder bebas).
 2. **Aktifkan layanan** Apache dan MySQL di XAMPP Control Panel.
 3. **Buat database** lewat phpMyAdmin (`http://localhost/phpmyadmin`) lalu import `sql/database.sql`. File ini membuat database `webcompany` beserta seluruh tabel dan data awal.
    > Jika ingin nama database berbeda, buat database kosong dahulu dengan nama tersebut, import file di atas, lalu sesuaikan `includes/config.php`.
@@ -40,8 +40,8 @@ Website company profile rumah sakit dengan panel admin lengkap. Dibangun dengan 
    define('DB_PASS', '');
    ```
 
-5. **Akses website**: buka `http://localhost/webcompany`
-6. **Akses admin**: buka `http://localhost/webcompany/admin/`
+5. **Akses website**: buka `http://localhost/rsuarthamedica`
+6. **Akses admin**: buka `http://localhost/rsuarthamedica/admin/`
 
 ### Akun Admin Bawaan
 
@@ -137,7 +137,7 @@ Masuk lewat `/admin/`, lalu login dengan username & password. Berikut menu sideb
 ## Struktur Folder
 
 ```
-webcompany/
+rsuarthamedica/
 ├── index.php            Halaman beranda
 ├── about.php            Tentang
 ├── services.php         Layanan
@@ -169,7 +169,7 @@ webcompany/
 
 ## Deployment ke VPS + SSL (Ringkas)
 
-1. Pindahkan seluruh isi folder ke `/var/www/webcompany`.
+1. Pindahkan seluruh isi folder ke `/var/www/rsuarthamedica`.
 2. Buat database di server, import `sql/database.sql`, sesuaikan kredensial di `includes/config.php`.
 3. Atur vhost Apache: `DocumentRoot` ke folder proyek, aktifkan `mod_rewrite` dan `AllowOverride All`.
 4. Pasang SSL gratis: `sudo apt install certbot python3-certbot-apache` lalu `sudo certbot --apache -d domain.com -d www.domain.com`.

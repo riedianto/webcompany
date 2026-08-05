@@ -75,7 +75,13 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Ikon (Bootstrap Icons)</label>
-            <input type="text" name="icon" class="form-control" placeholder="bi bi-heart-pulse" value="<?= e($edit['icon'] ?? '') ?>">
+            <div class="input-group">
+              <div class="input-group-prepend"><span class="input-group-text" id="biIconPreview"><i class="<?= e($edit['icon'] ?? '') ?: 'bi bi-heart-pulse' ?>"></i></span></div>
+              <input type="text" name="icon" id="iconField" class="form-control js-icon-field" placeholder="bi bi-heart-pulse" data-default-icon="bi bi-heart-pulse" value="<?= e($edit['icon'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent" data-bi-picker data-target="#iconField"><i class="fas fa-icons mr-1"></i>Pilih Ikon</button>
+              </div>
+            </div>
             <small class="icon-helper">Contoh: bi bi-heart-pulse, bi bi-brain, bi bi-eye-fill.</small>
           </div>
           <div class="form-group">
@@ -152,4 +158,5 @@ include __DIR__ . '/layout/header.php';
   </div>
 </div>
 
+<?php include __DIR__ . '/partials/icon-picker.php'; ?>
 <?php include __DIR__ . '/layout/footer.php'; ?>

@@ -21,6 +21,7 @@ $logo = setting('site_logo') ? img_url('logos', setting('site_logo')) : base_url
 <link rel="icon" type="image/svg+xml" href="<?= e($logo) ?>">
 <link rel="stylesheet" href="<?= e(base_url('admin/assets/vendor/bootstrap/css/bootstrap.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('admin/assets/vendor/fa/css/all.min.css')) ?>">
+<link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap-icons/bootstrap-icons.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('admin/assets/vendor/adminlte/css/adminlte.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('admin/assets/admin.css')) ?>">
 <style>
