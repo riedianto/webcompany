@@ -136,7 +136,7 @@ $serviceDoctors = $type === 'service'
         <?php $rImg = $r['image'] ? img_url($subdir, $r['image']) : ''; ?>
         <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="<?= ((int)$r['id'] % 4) * 80 ?>">
           <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=' . $type . '&id=' . (int)$r['id'])) ?>">
-            <?php if ($rImg): ?><img src="<?= e($rImg) ?>" alt="<?= e($r['title']) ?>" class="rounded-4 mb-3" style="width:100%;height:120px;object-fit:cover"><?php endif; ?>
+            <?php if ($rImg): ?><img src="<?= e($rImg) ?>" alt="<?= e($r['title']) ?>" class="rounded-4 mb-3" style="width:100%;height:120px;object-fit:cover"><?php else: ?><div class="icon-card-placeholder rounded-4 mb-3" style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;background:var(--grad);color:#fff;font-size:2.2rem;border:1px solid var(--border)"><i class="<?= e($r['icon'] ?: $icon) ?>"></i></div><?php endif; ?>
             <span class="icon-wrap"><i class="<?= e($r['icon'] ?: $icon) ?>"></i></span>
             <h5><?= e($r['title']) ?></h5>
             <p><?= e(truncate($r['description'], 90)) ?></p>

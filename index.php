@@ -8,9 +8,20 @@ $active = 'home';
 $slides = db_all('SELECT * FROM hero_slides WHERE active = 1 ORDER BY sort ASC');
 $services = db_all('SELECT * FROM services WHERE active = 1 ORDER BY sort ASC LIMIT 8');
 $facilities = db_all('SELECT * FROM facilities WHERE active = 1 ORDER BY sort ASC LIMIT 8');
-$doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMIT 4');
+
+$facImagesByFac = [];
+$facIds = array_column($facilities, 'id');
+if ($facIds) {
+    $ph = implode(',', array_fill(0, count($facIds), '?'));
+    foreach (db_all("SELECT facility_id, image FROM facility_images WHERE facility_id IN ($ph) ORDER BY sort ASC, id ASC", $facIds) as $fi) {
+        if (!empty($fi['image'])) {
+            $facImagesByFac[(int)$fi['facility_id']][] = $fi['image'];
+        }
+    }
+}
+$doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMIT 6');
 $docSchedules = get_schedules_map(array_column($doctors, 'id'));
-$news = db_all("SELECT p.*, c.name AS category_name FROM posts p LEFT JOIN categories c ON c.id = p.category_id WHERE p.status = 'published' AND p.published_at <= NOW() ORDER BY p.published_at DESC LIMIT 3");
+$news = db_all("SELECT p.*, c.name AS category_name FROM posts p LEFT JOIN categories c ON c.id = p.category_id WHERE p.status = 'published' AND p.published_at <= NOW() ORDER BY p.published_at DESC LIMIT 5");
 $partners = db_all('SELECT * FROM partners WHERE active = 1 ORDER BY sort ASC');
 
 include __DIR__ . '/includes/header.php';
@@ -18,7 +29,7 @@ include __DIR__ . '/includes/header.php';
 
 <?php if ($slides): ?>
 <section class="hero-carousel" id="home">
-  <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+  <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
     <div class="carousel-indicators">
       <?php foreach ($slides as $i => $s): ?>
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="<?= $i ?>" class="<?= $i === 0 ? 'active' : '' ?>" aria-label="<?= e(t('hero.slide', [$i + 1])) ?>"></button>
@@ -27,7 +38,8 @@ include __DIR__ . '/includes/header.php';
     <div class="carousel-inner">
       <?php foreach ($slides as $i => $s): ?>
         <?php $bg = $s['image'] ? img_url('heroes', $s['image']) : ''; ?>
-        <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>" <?= $bg ? 'style="background-image:url(\'' . e($bg) . '\')"' : '' ?>>
+        <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
+          <?php if ($bg): ?><div class="hero-bg" style="background-image:url('<?= e($bg) ?>')"></div><?php endif; ?>
           <div class="hero-shape" style="width:140px;height:140px;top:18%;left:8%;animation-delay:0s"></div>
           <div class="hero-shape" style="width:90px;height:90px;bottom:22%;left:44%;animation-delay:2s"></div>
           <div class="hero-shape" style="width:60px;height:60px;top:28%;right:14%;animation-delay:4s"></div>
@@ -128,16 +140,24 @@ include __DIR__ . '/includes/header.php';
       <h2 class="section-title"><?= e(t('home.services.title')) ?></h2>
       <p class="section-sub mx-auto"><?= e(t('home.services.sub')) ?></p>
     </div>
-    <div class="row g-4 mt-3">
-      <?php foreach ($services as $svc): ?>
-      <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$svc['sort'] % 4) * 80 ?>">
-        <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=service&id=' . $svc['id'])) ?>">
-          <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
-          <h5><?= e($svc['title']) ?></h5>
-          <p><?= e($svc['description']) ?></p>
-        </a>
+    <div class="svc-strip mt-3" data-aos="fade-up">
+      <div class="svc-track">
+        <?php for ($r = 0; $r < 2; $r++): ?>
+          <?php foreach ($services as $svc): ?>
+          <?php $sImg = $svc['image'] ? img_url('services', $svc['image']) : ''; ?>
+          <a class="icon-card icon-card-link svc-card" href="<?= e(base_url('detail.php?type=service&id=' . $svc['id'])) ?>">
+            <?php if ($sImg): ?>
+            <img src="<?= e($sImg) ?>" alt="<?= e($svc['title']) ?>" class="icon-card-img rounded-4 mb-3">
+            <?php else: ?>
+            <div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></div>
+            <?php endif; ?>
+            <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
+            <h5><?= e($svc['title']) ?></h5>
+            <p><?= e($svc['description']) ?></p>
+          </a>
+          <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -150,16 +170,27 @@ include __DIR__ . '/includes/header.php';
       <h2 class="section-title"><?= e(t('home.facilities.title')) ?></h2>
       <p class="section-sub mx-auto"><?= e(t('home.facilities.sub')) ?></p>
     </div>
-    <div class="row g-4 mt-3">
-      <?php foreach ($facilities as $fac): ?>
-      <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$fac['sort'] % 4) * 80 ?>">
-        <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=facility&id=' . $fac['id'])) ?>">
-          <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>
-          <h5><?= e($fac['title']) ?></h5>
-          <p><?= e($fac['description']) ?></p>
-        </a>
+    <div class="fac-strip mt-3" data-aos="fade-up">
+      <div class="fac-track">
+        <?php for ($r = 0; $r < 2; $r++): ?>
+          <?php foreach ($facilities as $fac): ?>
+          <?php $facUrl = e(base_url('detail.php?type=facility&id=' . $fac['id'])); ?>
+          <?php $fImg = $fac['image'] ? img_url('facilities', $fac['image']) : ($facImagesByFac[(int)$fac['id']][0] ?? '' ? img_url('facilities', $facImagesByFac[(int)$fac['id']][0]) : ''); ?>
+          <div class="icon-card icon-card-link fac-card">
+            <?php if ($fImg): ?>
+            <a class="icon-card-top" href="<?= $facUrl ?>"><img src="<?= e($fImg) ?>" alt="<?= e($fac['title']) ?>" class="icon-card-img rounded-4 mb-3"></a>
+            <?php else: ?>
+            <div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></div>
+            <?php endif; ?>
+            <a class="icon-card-top" href="<?= $facUrl ?>">
+              <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>
+              <h5><?= e($fac['title']) ?></h5>
+            </a>
+            <p><?= e($fac['description']) ?></p>
+          </div>
+          <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -208,23 +239,25 @@ include __DIR__ . '/includes/header.php';
       </div>
       <a href="<?= e(base_url('doctors.php')) ?>" class="btn btn-outline-primary-round btn-sm"><?= e(t('home.doctors.all')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
     </div>
-    <div class="row g-4">
-      <?php foreach ($doctors as $doc): ?>
-      <?php $photo = $doc['photo'] ? img_url('doctors', $doc['photo']) : base_url('assets/img/doctor-placeholder.svg'); ?>
-      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="<?= ((int)$doc['sort'] % 4) * 80 ?>">
-        <div class="doc-card">
-          <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
-          <div class="doc-body">
-            <h5 class="doc-name"><?= e($doc['name']) ?></h5>
-            <div class="doc-spec"><?= e($doc['specialist']) ?></div>
-            <?php $dComp = schedule_compact($docSchedules[$doc['id']] ?? []); ?>
-            <?php if ($dComp): ?>
-            <div class="doc-sched"><i class="bi bi-clock"></i><?= e($dComp) ?></div>
-            <?php endif; ?>
+    <div class="doc-strip" data-aos="fade-up">
+      <div class="doc-track">
+        <?php for ($r = 0; $r < 2; $r++): ?>
+          <?php foreach ($doctors as $doc): ?>
+          <?php $photo = $doc['photo'] ? img_url('doctors', $doc['photo']) : base_url('assets/img/doctor-placeholder.svg'); ?>
+          <div class="doc-card doc-card-item">
+            <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
+            <div class="doc-body">
+              <h5 class="doc-name"><?= e($doc['name']) ?></h5>
+              <div class="doc-spec"><?= e($doc['specialist']) ?></div>
+              <?php $dComp = schedule_compact($docSchedules[$doc['id']] ?? []); ?>
+              <?php if ($dComp): ?>
+              <div class="doc-sched"><i class="bi bi-clock"></i><?= e($dComp) ?></div>
+              <?php endif; ?>
+            </div>
           </div>
-        </div>
+          <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -239,24 +272,26 @@ include __DIR__ . '/includes/header.php';
       </div>
       <a href="<?= e(base_url('news.php')) ?>" class="btn btn-outline-primary-round btn-sm"><?= e(t('home.news.all')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
     </div>
-    <div class="row g-4">
-      <?php foreach ($news as $post): ?>
-      <?php $pImg = $post['image'] ? img_url('posts', $post['image']) : base_url('assets/img/post-placeholder.svg'); ?>
-      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="<?= $post['id'] % 3 * 100 ?>">
-        <div class="news-card">
-          <div class="news-img-wrap"><img class="news-img" src="<?= e($pImg) ?>" alt="<?= e($post['title']) ?>"></div>
-          <div class="news-body">
-            <div class="news-meta">
-              <?php if ($post['category_name']): ?><span class="chip"><?= e($post['category_name']) ?></span><?php endif; ?>
-              <span><i class="bi bi-calendar3"></i><?= e(format_date($post['published_at'])) ?></span>
+    <div class="news-strip" data-aos="fade-up">
+      <div class="news-track">
+        <?php for ($r = 0; $r < 2; $r++): ?>
+          <?php foreach ($news as $post): ?>
+          <?php $pImg = $post['image'] ? img_url('posts', $post['image']) : base_url('assets/img/post-placeholder.svg'); ?>
+          <div class="news-card news-card-item">
+            <div class="news-img-wrap"><img class="news-img" src="<?= e($pImg) ?>" alt="<?= e($post['title']) ?>"></div>
+            <div class="news-body">
+              <div class="news-meta">
+                <?php if ($post['category_name']): ?><span class="chip"><?= e($post['category_name']) ?></span><?php endif; ?>
+                <span><i class="bi bi-calendar3"></i><?= e(format_date($post['published_at'])) ?></span>
+              </div>
+              <h5><a href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e($post['title']) ?></a></h5>
+              <p><?= e(truncate($post['excerpt'] ?: $post['content'], 110)) ?></p>
+              <a class="read-more" href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e(t('news.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
-            <h5><a href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e($post['title']) ?></a></h5>
-            <p><?= e(truncate($post['excerpt'] ?: $post['content'], 110)) ?></p>
-            <a class="read-more" href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e(t('news.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
           </div>
-        </div>
+          <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>

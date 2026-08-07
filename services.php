@@ -44,7 +44,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
       <?php $svcUrl = e(base_url('detail.php?type=service&id=' . $svc['id'])); ?>
       <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$svc['sort'] % 4) * 80 ?>">
         <a class="icon-card icon-card-link" href="<?= $svcUrl ?>">
-          <?php if ($sImg): ?><img src="<?= e($sImg) ?>" alt="<?= e($svc['title']) ?>" class="icon-card-img rounded-4 mb-3"><?php endif; ?>
+          <?php if ($sImg): ?><img src="<?= e($sImg) ?>" alt="<?= e($svc['title']) ?>" class="icon-card-img rounded-4 mb-3"><?php else: ?><div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></div><?php endif; ?>
           <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
           <h5><?= e($svc['title']) ?></h5>
           <p><?= e($svc['description']) ?></p>
@@ -99,6 +99,8 @@ include __DIR__ . '/includes/sections/page_banner.php';
           </div>
           <?php elseif (count($slides) === 1): ?>
           <a class="icon-card-top" href="<?= $facUrl ?>"><img src="<?= e(img_url('facilities', $slides[0])) ?>" alt="<?= e($fac['title']) ?>" class="icon-card-img rounded-4 mb-3"></a>
+          <?php else: ?>
+          <div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></div>
           <?php endif; ?>
           <a class="icon-card-top" href="<?= $facUrl ?>">
             <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>

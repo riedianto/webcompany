@@ -204,18 +204,31 @@ a { text-decoration: none; }
   min-height: 540px;
   max-height: 820px;
   position: relative;
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
   display: flex;
   align-items: center;
+}
+.hero-carousel .hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  animation: heroKenburns 20s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes heroKenburns {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.12) translate(1.5%, -2%); }
 }
 .hero-carousel .carousel-item::before {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(100deg, rgba(7, 47, 56, 0.92) 0%, rgba(10, 125, 140, 0.72) 55%, rgba(244, 162, 97, 0.35) 100%);
 }
-.hero-caption { position: relative; z-index: 2; color: #fff; padding-top: 0.5rem; }
+.hero-caption { position: relative; z-index: 3; color: #fff; padding-top: 0.5rem; }
 .hero-tag {
   display: inline-flex;
   align-items: center;
@@ -269,11 +282,20 @@ a { text-decoration: none; }
 
 .hero-shape {
   position: absolute;
+  z-index: 2;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   animation: floaty 9s ease-in-out infinite;
 }
 @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-24px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel .hero-bg,
+  .hero-carousel .hero-shape,
+  .hero-carousel .carousel-item .hero-caption > * {
+    animation: none !important;
+  }
+}
 
 /* ---------- Sections ---------- */
 .section { padding: 5.5rem 0; }
@@ -370,6 +392,23 @@ a.icon-card-link:hover { color: inherit; }
   height: 130px;
   object-fit: cover;
   display: block;
+}
+.icon-card .icon-card-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grad);
+  color: #fff;
+  font-size: 2.6rem;
+  border: 1px solid var(--border);
+}
+.icon-card .icon-card-placeholder::after {
+  content: '';
+  position: absolute;
+  top: -24px; right: -24px;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* ---------- Read more link ---------- */
@@ -505,6 +544,78 @@ a.icon-card-link:hover { color: inherit; }
 }
 .partner-logo:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); color: var(--primary); }
 .partner-logo img { max-height: 46px; width: auto; }
+
+/* ---------- Moving cards (services / facilities on homepage) ---------- */
+.svc-strip,
+.fac-strip {
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem 0 1rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.svc-track,
+.fac-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: partnersScroll 32s linear infinite;
+}
+.svc-strip:hover .svc-track,
+.fac-strip:hover .fac-track { animation-play-state: paused; }
+.svc-card,
+.fac-card { width: 280px; flex: 0 0 auto; }
+
+/* ---------- Moving doctor cards (homepage) ---------- */
+.doc-strip {
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem 0 1rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.doc-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: partnersScroll 32s linear infinite;
+}
+.doc-strip:hover .doc-track { animation-play-state: paused; }
+.doc-card-item { width: 280px; flex: 0 0 auto; }
+
+/* ---------- Moving news cards (homepage) ---------- */
+.news-strip {
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem 0 1rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.news-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: partnersScroll 32s linear infinite;
+}
+.news-strip:hover .news-track { animation-play-state: paused; }
+.news-card-item { width: 320px; flex: 0 0 auto; }
+
+/* ---------- Moving gallery cards (about page) ---------- */
+.gal-strip {
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem 0 1rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.gal-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: partnersScroll 32s linear infinite;
+}
+.gal-strip:hover .gal-track { animation-play-state: paused; }
+.gal-item { width: 320px; flex: 0 0 auto; }
 
 /* ---------- CTA banner ---------- */
 .cta-banner {

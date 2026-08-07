@@ -11,7 +11,7 @@ $misi    = about_section('misi');
 $sejarah = about_section('sejarah');
 
 $facilities = db_all('SELECT * FROM facilities WHERE active = 1 ORDER BY sort ASC LIMIT 6');
-$doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMIT 4');
+$doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMIT 6');
 $gallery = db_all('SELECT * FROM gallery WHERE active = 1 AND image <> "" ORDER BY sort ASC, id ASC');
 
 include __DIR__ . '/includes/header.php';
@@ -107,20 +107,22 @@ include __DIR__ . '/includes/sections/page_banner.php';
       <span class="section-eyebrow"><?= e(t('about.team')) ?></span>
       <h2 class="section-title"><?= e(t('about.team.sub')) ?></h2>
     </div>
-    <div class="row g-4 mt-3">
-      <?php foreach ($doctors as $doc): ?>
-      <?php $photo = $doc['photo'] ? img_url('doctors', $doc['photo']) : base_url('assets/img/doctor-placeholder.svg'); ?>
-      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="<?= ((int)$doc['sort'] % 4) * 80 ?>">
-        <div class="doc-card">
-          <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
-          <div class="doc-body">
-            <h5 class="doc-name"><?= e($doc['name']) ?></h5>
-            <div class="doc-spec"><?= e($doc['specialist']) ?></div>
-            <a class="read-more" href="<?= e(base_url('doctor-detail.php?id=' . $doc['id'])) ?>"><?= e(t('about.fullprofile')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+    <div class="doc-strip" data-aos="fade-up">
+      <div class="doc-track">
+        <?php for ($r = 0; $r < 2; $r++): ?>
+          <?php foreach ($doctors as $doc): ?>
+          <?php $photo = $doc['photo'] ? img_url('doctors', $doc['photo']) : base_url('assets/img/doctor-placeholder.svg'); ?>
+          <div class="doc-card doc-card-item">
+            <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
+            <div class="doc-body">
+              <h5 class="doc-name"><?= e($doc['name']) ?></h5>
+              <div class="doc-spec"><?= e($doc['specialist']) ?></div>
+              <a class="read-more" href="<?= e(base_url('doctor-detail.php?id=' . $doc['id'])) ?>"><?= e(t('about.fullprofile')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
           </div>
-        </div>
+          <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -134,15 +136,17 @@ include __DIR__ . '/includes/sections/page_banner.php';
       <span class="section-eyebrow"><?= e(t('about.gallery')) ?></span>
       <h2 class="section-title"><?= e(t('about.gallery.sub')) ?></h2>
     </div>
-    <div class="row g-4 mt-3">
-      <?php foreach ($gallery as $gi): ?>
-      <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$gi['id'] % 4) * 80 ?>">
-        <a class="gallery-item" href="<?= e(img_url('gallery', $gi['image'])) ?>" data-caption="<?= e($gi['title'] ?: '') ?>" aria-label="<?= e($gi['title'] ?: 'Galeri') ?>">
-          <img src="<?= e(img_url('gallery', $gi['image'])) ?>" alt="<?= e($gi['title'] ?: 'Galeri') ?>">
-          <?php if ($gi['title']): ?><span class="gallery-caption"><?= e($gi['title']) ?></span><?php endif; ?>
-        </a>
+    <div class="gal-strip" data-aos="fade-up">
+      <div class="gal-track">
+        <?php for ($r = 0; $r < 2; $r++): ?>
+          <?php foreach ($gallery as $gi): ?>
+          <a class="gallery-item gal-item" href="<?= e(img_url('gallery', $gi['image'])) ?>" data-caption="<?= e($gi['title'] ?: '') ?>" aria-label="<?= e($gi['title'] ?: 'Galeri') ?>">
+            <img src="<?= e(img_url('gallery', $gi['image'])) ?>" alt="<?= e($gi['title'] ?: 'Galeri') ?>">
+            <?php if ($gi['title']): ?><span class="gallery-caption"><?= e($gi['title']) ?></span><?php endif; ?>
+          </a>
+          <?php endforeach; ?>
+        <?php endfor; ?>
       </div>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>
