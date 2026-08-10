@@ -423,6 +423,16 @@ a.icon-card-link:hover { color: inherit; }
 .read-more:hover { color: var(--secondary); }
 .icon-card .read-more { margin-top: 1rem; }
 
+/* ---------- Text clamp (read more) ---------- */
+.text-clamp,
+.text-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.text-clamp { -webkit-line-clamp: 2; }
+.text-clamp-3 { -webkit-line-clamp: 3; }
+
 /* ---------- Facility mini carousel ---------- */
 .fac-carousel { overflow: hidden; }
 .fac-carousel .carousel-inner,

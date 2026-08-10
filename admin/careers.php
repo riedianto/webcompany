@@ -25,9 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $position = trim((string)($_POST['position'] ?? ''));
+    $positionEn = trim((string)($_POST['position_en'] ?? ''));
     $department = trim((string)($_POST['department'] ?? ''));
+    $departmentEn = trim((string)($_POST['department_en'] ?? ''));
     $requirements = trim((string)($_POST['requirements'] ?? ''));
+    $requirementsEn = trim((string)($_POST['requirements_en'] ?? ''));
     $description = trim((string)($_POST['description'] ?? ''));
+    $descriptionEn = trim((string)($_POST['description_en'] ?? ''));
     $status = ($_POST['status'] ?? 'open') === 'closed' ? 'closed' : 'open';
     $applyLink = trim((string)($_POST['apply_link'] ?? ''));
 
@@ -44,12 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash('error', 'Nama posisi wajib diisi.');
     } else {
         if ($rid > 0) {
-            db_exec('UPDATE careers SET position = ?, department = ?, requirements = ?, description = ?, status = ?, deadline = ?, apply_link = ? WHERE id = ?',
-                [$position, $department, $requirements, $description, $status, $deadline !== '' ? $deadline : null, $applyLink !== '' ? $applyLink : null, $rid]);
+            db_exec('UPDATE careers SET position = ?, position_en = ?, department = ?, department_en = ?, requirements = ?, requirements_en = ?, description = ?, description_en = ?, status = ?, deadline = ?, apply_link = ? WHERE id = ?',
+                [$position, $positionEn, $department, $departmentEn, $requirements, $requirementsEn, $description, $descriptionEn, $status, $deadline !== '' ? $deadline : null, $applyLink !== '' ? $applyLink : null, $rid]);
             flash('success', 'Lowongan berhasil diperbarui.');
         } else {
-            db_exec('INSERT INTO careers (position, department, requirements, description, status, deadline, apply_link) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [$position, $department, $requirements, $description, $status, $deadline !== '' ? $deadline : null, $applyLink !== '' ? $applyLink : null]);
+            db_exec('INSERT INTO careers (position, position_en, department, department_en, requirements, requirements_en, description, description_en, status, deadline, apply_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [$position, $positionEn, $department, $departmentEn, $requirements, $requirementsEn, $description, $descriptionEn, $status, $deadline !== '' ? $deadline : null, $applyLink !== '' ? $applyLink : null]);
             flash('success', 'Lowongan berhasil ditambahkan.');
         }
         redirect(base_url('admin/careers.php'));
@@ -71,20 +75,56 @@ include __DIR__ . '/layout/header.php';
           <input type="hidden" name="id" value="<?= (int)($edit['id'] ?? 0) ?>">
           <div class="form-group">
             <label>Posisi <span class="text-danger">*</span></label>
-            <input type="text" name="position" class="form-control" required value="<?= e($edit['position'] ?? '') ?>" placeholder="Perawat / Bidan">
+            <input type="text" name="position" id="carPosition" class="form-control" required value="<?= e($edit['position'] ?? '') ?>" placeholder="Perawat / Bidan">
+          </div>
+          <div class="form-group">
+            <label>Posisi (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="position_en" id="carPositionEn" class="form-control" value="<?= e($edit['position_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#carPosition" data-target="#carPositionEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Departemen</label>
-            <input type="text" name="department" class="form-control" value="<?= e($edit['department'] ?? '') ?>" placeholder="Rawat Inap">
+            <input type="text" name="department" id="carDept" class="form-control" value="<?= e($edit['department'] ?? '') ?>" placeholder="Rawat Inap">
+          </div>
+          <div class="form-group">
+            <label>Departemen (EN)</label>
+            <div class="input-group">
+              <input type="text" name="department_en" id="carDeptEn" class="form-control" value="<?= e($edit['department_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#carDept" data-target="#carDeptEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Deskripsi Pekerjaan</label>
-            <textarea name="description" class="form-control" rows="4"><?= e($edit['description'] ?? '') ?></textarea>
+            <textarea name="description" id="carDesc" class="form-control" rows="4"><?= e($edit['description'] ?? '') ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Deskripsi Pekerjaan (EN)</label>
+            <div class="input-group">
+              <textarea name="description_en" id="carDescEn" class="form-control" rows="4"><?= e($edit['description_en'] ?? '') ?></textarea>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#carDesc" data-target="#carDescEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Kualifikasi</label>
-            <textarea name="requirements" class="form-control" rows="5"><?= e($edit['requirements'] ?? '') ?></textarea>
+            <textarea name="requirements" id="carReq" class="form-control" rows="5"><?= e($edit['requirements'] ?? '') ?></textarea>
             <small class="icon-helper">Tulis setiap kualifikasi di baris baru.</small>
+          </div>
+          <div class="form-group">
+            <label>Kualifikasi (EN)</label>
+            <div class="input-group">
+              <textarea name="requirements_en" id="carReqEn" class="form-control" rows="5"><?= e($edit['requirements_en'] ?? '') ?></textarea>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#carReq" data-target="#carReqEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-md-6">
@@ -129,7 +169,7 @@ include __DIR__ . '/layout/header.php';
             <tbody>
               <?php foreach ($rows as $r): ?>
               <tr>
-                <td class="font-weight-bold"><?= e($r['position']) ?></td>
+                <td class="font-weight-bold"><?= e($r['position']) ?><?php if (empty($r['position_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td><?= e($r['department']) ?></td>
                 <td class="text-muted small"><?= $r['deadline'] ? e(format_date_id($r['deadline'])) : '-' ?></td>
                 <td>

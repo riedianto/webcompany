@@ -29,10 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $title = trim((string)($_POST['title'] ?? ''));
+    $titleEn = trim((string)($_POST['title_en'] ?? ''));
     $slug = trim((string)($_POST['slug'] ?? ''));
     $categoryId = (int)($_POST['category_id'] ?? 0) ?: null;
     $excerpt = trim((string)($_POST['excerpt'] ?? ''));
+    $excerptEn = trim((string)($_POST['excerpt_en'] ?? ''));
     $content = (string)($_POST['content'] ?? '');
+    $contentEn = (string)($_POST['content_en'] ?? '');
     $author = trim((string)($_POST['author'] ?? ''));
     $status = ($_POST['status'] ?? 'published') === 'draft' ? 'draft' : 'published';
 
@@ -63,14 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             if ($rid > 0) {
                 db_exec(
-                    'UPDATE posts SET category_id = ?, title = ?, slug = ?, image = ?, excerpt = ?, content = ?, author = ?, published_at = ?, status = ? WHERE id = ?',
-                    [$categoryId, $title, $slug, $up['file'], $excerpt, $content, $author, $publishedAt, $status, $rid]
+                    'UPDATE posts SET category_id = ?, title = ?, title_en = ?, slug = ?, image = ?, excerpt = ?, excerpt_en = ?, content = ?, content_en = ?, author = ?, published_at = ?, status = ? WHERE id = ?',
+                    [$categoryId, $title, $titleEn, $slug, $up['file'], $excerpt, $excerptEn, $content, $contentEn, $author, $publishedAt, $status, $rid]
                 );
                 flash('success', 'Artikel berhasil diperbarui.');
             } else {
                 db_exec(
-                    'INSERT INTO posts (category_id, title, slug, image, excerpt, content, author, published_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [$categoryId, $title, $slug, $up['file'], $excerpt, $content, $author, $publishedAt, $status]
+                    'INSERT INTO posts (category_id, title, title_en, slug, image, excerpt, excerpt_en, content, content_en, author, published_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [$categoryId, $title, $titleEn, $slug, $up['file'], $excerpt, $excerptEn, $content, $contentEn, $author, $publishedAt, $status]
                 );
                 flash('success', 'Artikel berhasil ditambahkan.');
             }
@@ -96,6 +99,15 @@ include __DIR__ . '/layout/header.php';
           <div class="form-group">
             <label>Judul <span class="text-danger">*</span></label>
             <input type="text" name="title" id="titleField" class="form-control" required value="<?= e($edit['title'] ?? '') ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="title_en" id="postTitleEn" class="form-control" value="<?= e($edit['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#titleField" data-target="#postTitleEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Slug (URL)</label>
@@ -145,7 +157,16 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Ringkasan (excerpt)</label>
-            <textarea name="excerpt" class="form-control" rows="2"><?= e($edit['excerpt'] ?? '') ?></textarea>
+            <textarea name="excerpt" id="postExcerpt" class="form-control" rows="2"><?= e($edit['excerpt'] ?? '') ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Ringkasan (EN)</label>
+            <div class="input-group">
+              <textarea name="excerpt_en" id="postExcerptEn" class="form-control" rows="2"><?= e($edit['excerpt_en'] ?? '') ?></textarea>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#postExcerpt" data-target="#postExcerptEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Gambar Sampul</label>
@@ -155,7 +176,16 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Isi Konten</label>
-            <textarea name="content" class="form-control" rows="12" placeholder="Tulis isi artikel di sini... (boleh menggunakan HTML sederhana: &lt;p&gt;, &lt;b&gt;, &lt;ul&gt; dsb.)"><?= e($edit['content'] ?? '') ?></textarea>
+            <textarea name="content" id="postContent" class="form-control" rows="12" placeholder="Tulis isi artikel di sini... (boleh menggunakan HTML sederhana: &lt;p&gt;, &lt;b&gt;, &lt;ul&gt; dsb.)"><?= e($edit['content'] ?? '') ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Isi Konten (EN)</label>
+            <div class="input-group">
+              <textarea name="content_en" id="postContentEn" class="form-control" rows="12"><?= e($edit['content_en'] ?? '') ?></textarea>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#postContent" data-target="#postContentEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <button type="submit" class="btn btn-accent"><i class="fas fa-save mr-2"></i><?= $edit ? 'Simpan Perubahan' : 'Terbitkan' ?></button>
           <?php if ($edit): ?><a href="posts.php" class="btn btn-outline-secondary">Batal</a><?php endif; ?>
@@ -178,7 +208,7 @@ include __DIR__ . '/layout/header.php';
             <tbody>
               <?php foreach ($rows as $r): ?>
               <tr>
-                <td class="font-weight-bold" style="max-width:280px"><?= e(truncate($r['title'], 45)) ?></td>
+                <td class="font-weight-bold" style="max-width:280px"><?= e(truncate($r['title'], 45)) ?><?php if (empty($r['title_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td><?= e($r['category_name'] ?? '-') ?></td>
                 <td>
                   <?php if ($r['status'] === 'published'): ?><span class="badge badge-soft-success">Terbit</span>

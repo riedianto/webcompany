@@ -12,12 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sections = ['profil', 'visi', 'misi', 'sejarah'];
     foreach ($sections as $key) {
         $title = trim((string)($_POST[$key . '_title'] ?? ''));
+        $titleEn = trim((string)($_POST[$key . '_title_en'] ?? ''));
         $content = (string)($_POST[$key . '_content'] ?? '');
+        $contentEn = (string)($_POST[$key . '_content_en'] ?? '');
         $existing = db_one('SELECT id FROM about WHERE section_key = ?', [$key]);
         if ($existing) {
-            db_exec('UPDATE about SET title = ?, content = ? WHERE section_key = ?', [$title, $content, $key]);
+            db_exec('UPDATE about SET title = ?, title_en = ?, content = ?, content_en = ? WHERE section_key = ?', [$title, $titleEn, $content, $contentEn, $key]);
         } else {
-            db_exec('INSERT INTO about (section_key, title, content) VALUES (?, ?, ?)', [$key, $title, $content]);
+            db_exec('INSERT INTO about (section_key, title, title_en, content, content_en) VALUES (?, ?, ?, ?, ?)', [$key, $title, $titleEn, $content, $contentEn]);
         }
     }
     flash('success', 'Konten "Tentang Kami" berhasil disimpan.');
@@ -41,12 +43,26 @@ include __DIR__ . '/layout/header.php';
         <div class="card-body">
           <div class="form-group">
             <label>Judul Bagian</label>
-            <input type="text" name="profil_title" class="form-control" value="<?= e($profil['title']) ?>">
+            <input type="text" name="profil_title" id="profil_title" class="form-control" value="<?= e($profil['title']) ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul Bagian (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="profil_title_en" id="profil_title_en" class="form-control" value="<?= e($profil['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#profil_title" data-target="#profil_title_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Isi Profil</label>
-            <textarea name="profil_content" class="form-control" rows="8"><?= e($profil['content']) ?></textarea>
+            <textarea name="profil_content" id="profil_content" class="form-control" rows="8"><?= e($profil['content']) ?></textarea>
             <small class="icon-helper">Teks bebas. Baris baru otomatis menjadi paragraf.</small>
+          </div>
+          <div class="form-group">
+            <label>Isi Profil (EN - terjemahan Inggris)</label>
+            <textarea name="profil_content_en" id="profil_content_en" class="form-control" rows="8"><?= e($profil['content_en'] ?? '') ?></textarea>
+            <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#profil_content" data-target="#profil_content_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
           </div>
         </div>
       </div>
@@ -56,11 +72,25 @@ include __DIR__ . '/layout/header.php';
         <div class="card-body">
           <div class="form-group">
             <label>Judul Bagian</label>
-            <input type="text" name="sejarah_title" class="form-control" value="<?= e($sejarah['title']) ?>">
+            <input type="text" name="sejarah_title" id="sejarah_title" class="form-control" value="<?= e($sejarah['title']) ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul Bagian (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="sejarah_title_en" id="sejarah_title_en" class="form-control" value="<?= e($sejarah['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#sejarah_title" data-target="#sejarah_title_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Isi Sejarah</label>
-            <textarea name="sejarah_content" class="form-control" rows="6"><?= e($sejarah['content']) ?></textarea>
+            <textarea name="sejarah_content" id="sejarah_content" class="form-control" rows="6"><?= e($sejarah['content']) ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Isi Sejarah (EN - terjemahan Inggris)</label>
+            <textarea name="sejarah_content_en" id="sejarah_content_en" class="form-control" rows="6"><?= e($sejarah['content_en'] ?? '') ?></textarea>
+            <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#sejarah_content" data-target="#sejarah_content_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
           </div>
         </div>
       </div>
@@ -72,11 +102,25 @@ include __DIR__ . '/layout/header.php';
         <div class="card-body">
           <div class="form-group">
             <label>Judul</label>
-            <input type="text" name="visi_title" class="form-control" value="<?= e($visi['title']) ?>">
+            <input type="text" name="visi_title" id="visi_title" class="form-control" value="<?= e($visi['title']) ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="visi_title_en" id="visi_title_en" class="form-control" value="<?= e($visi['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#visi_title" data-target="#visi_title_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Isi Visi</label>
-            <textarea name="visi_content" class="form-control" rows="5"><?= e($visi['content']) ?></textarea>
+            <textarea name="visi_content" id="visi_content" class="form-control" rows="5"><?= e($visi['content']) ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Isi Visi (EN - terjemahan Inggris)</label>
+            <textarea name="visi_content_en" id="visi_content_en" class="form-control" rows="5"><?= e($visi['content_en'] ?? '') ?></textarea>
+            <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#visi_content" data-target="#visi_content_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
           </div>
         </div>
       </div>
@@ -86,12 +130,26 @@ include __DIR__ . '/layout/header.php';
         <div class="card-body">
           <div class="form-group">
             <label>Judul</label>
-            <input type="text" name="misi_title" class="form-control" value="<?= e($misi['title']) ?>">
+            <input type="text" name="misi_title" id="misi_title" class="form-control" value="<?= e($misi['title']) ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="misi_title_en" id="misi_title_en" class="form-control" value="<?= e($misi['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#misi_title" data-target="#misi_title_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Isi Misi</label>
-            <textarea name="misi_content" class="form-control" rows="8"><?= e($misi['content']) ?></textarea>
+            <textarea name="misi_content" id="misi_content" class="form-control" rows="8"><?= e($misi['content']) ?></textarea>
             <small class="icon-helper">Setiap poin ditulis di baris baru.</small>
+          </div>
+          <div class="form-group">
+            <label>Isi Misi (EN - terjemahan Inggris)</label>
+            <textarea name="misi_content_en" id="misi_content_en" class="form-control" rows="8"><?= e($misi['content_en'] ?? '') ?></textarea>
+            <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#misi_content" data-target="#misi_content_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
           </div>
         </div>
       </div>

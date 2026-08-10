@@ -24,7 +24,7 @@ $favicon   = setting('site_favicon') ? img_url('logos', setting('site_favicon'))
   })();
 </script>
 <title><?= e($pageTitle) ?> | <?= e(setting('site_name')) ?></title>
-<meta name="description" content="<?= e(setting('site_description')) ?>">
+<meta name="description" content="<?= e(setting_en('site_description')) ?>">
 <link rel="icon" type="image/svg+xml" href="<?= e($favicon) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +32,7 @@ $favicon   = setting('site_favicon') ? img_url('logos', setting('site_favicon'))
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap/css/bootstrap.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/bootstrap-icons/bootstrap-icons.min.css')) ?>">
 <link rel="stylesheet" href="<?= e(base_url('assets/vendor/aos/aos.css')) ?>">
-<link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=6">
+<link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=7">
 <style>
   :root {
     --primary: <?= e($primary) ?>;
@@ -87,7 +87,7 @@ $favicon   = setting('site_favicon') ? img_url('logos', setting('site_favicon'))
 <?php if (setting('site_announcement')): ?>
 <div class="announcement">
   <div class="announce-track">
-    <span class="px-2"><?= e(setting('site_announcement')) ?></span>
+    <span class="px-2"><?= e(setting_en('site_announcement')) ?></span>
   </div>
 </div>
 <?php endif; ?>
@@ -119,7 +119,7 @@ $favicon   = setting('site_favicon') ? img_url('logos', setting('site_favicon'))
       <img src="<?= e($logo) ?>" alt="<?= e(setting('site_name')) ?>" class="brand-logo">
       <span class="brand-text">
         <span class="brand-name"><?= e(setting('site_name')) ?></span>
-        <span class="brand-tag"><?= e(setting('site_tagline')) ?></span>
+        <span class="brand-tag"><?= e(setting_en('site_tagline')) ?></span>
       </span>
     </a>
     <div class="d-flex align-items-center gap-3 order-lg-3 ms-lg-4">

@@ -41,14 +41,17 @@ include __DIR__ . '/includes/sections/page_banner.php';
     <div class="row g-4 mt-3">
       <?php foreach ($services as $svc): ?>
       <?php $sImg = $svc['image'] ? img_url('services', $svc['image']) : ''; ?>
-      <?php $svcUrl = e(base_url('detail.php?type=service&id=' . $svc['id'])); ?>
+      <?php $svcUrl = base_url('detail.php?type=service&id=' . $svc['id']); ?>
       <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="<?= ((int)$svc['sort'] % 4) * 80 ?>">
-        <a class="icon-card icon-card-link" href="<?= $svcUrl ?>">
-          <?php if ($sImg): ?><img src="<?= e($sImg) ?>" alt="<?= e($svc['title']) ?>" class="icon-card-img rounded-4 mb-3"><?php else: ?><div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></div><?php endif; ?>
-          <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
-          <h5><?= e($svc['title']) ?></h5>
-          <p><?= e($svc['description']) ?></p>
-        </a>
+        <div class="icon-card icon-card-link">
+          <?php if ($sImg): ?><a class="icon-card-top" href="<?= e($svcUrl) ?>"><img src="<?= e($sImg) ?>" alt="<?= e(pick($svc, 'title')) ?>" class="icon-card-img rounded-4 mb-3"></a><?php else: ?><div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></div><?php endif; ?>
+          <a class="icon-card-top" href="<?= e($svcUrl) ?>">
+            <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
+            <h5><?= e(pick($svc, 'title')) ?></h5>
+          </a>
+          <p class="text-clamp-3"><?= e(truncate(pick($svc, 'description'), 160)) ?></p>
+          <a class="read-more" href="<?= e($svcUrl) ?>"><?= e(t('services.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
       </div>
       <?php endforeach; ?>
     </div>
@@ -84,7 +87,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
             <div class="carousel-inner">
               <?php foreach ($slides as $si => $slide): ?>
               <div class="carousel-item <?= $si === 0 ? 'active' : '' ?>">
-                <a href="<?= $facUrl ?>"><img src="<?= e(img_url('facilities', $slide)) ?>" alt="<?= e($fac['title']) ?>" class="fac-carousel-img"></a>
+                <a href="<?= $facUrl ?>"><img src="<?= e(img_url('facilities', $slide)) ?>" alt="<?= e(pick($fac, 'title')) ?>" class="fac-carousel-img"></a>
               </div>
               <?php endforeach; ?>
             </div>
@@ -98,15 +101,15 @@ include __DIR__ . '/includes/sections/page_banner.php';
             </button>
           </div>
           <?php elseif (count($slides) === 1): ?>
-          <a class="icon-card-top" href="<?= $facUrl ?>"><img src="<?= e(img_url('facilities', $slides[0])) ?>" alt="<?= e($fac['title']) ?>" class="icon-card-img rounded-4 mb-3"></a>
+          <a class="icon-card-top" href="<?= $facUrl ?>"><img src="<?= e(img_url('facilities', $slides[0])) ?>" alt="<?= e(pick($fac, 'title')) ?>" class="icon-card-img rounded-4 mb-3"></a>
           <?php else: ?>
           <div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></div>
           <?php endif; ?>
           <a class="icon-card-top" href="<?= $facUrl ?>">
             <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>
-            <h5><?= e($fac['title']) ?></h5>
+            <h5><?= e(pick($fac, 'title')) ?></h5>
           </a>
-          <p><?= e($fac['description']) ?></p>
+          <p class="text-clamp-3"><?= e(truncate(pick($fac, 'description'), 160)) ?></p>
           <a class="read-more" href="<?= $facUrl ?>"><?= e(t('services.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
         </div>
       </div>

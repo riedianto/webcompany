@@ -54,6 +54,24 @@ function setting(string $key, string $default = ''): string
     return isset($s[$key]) && $s[$key] !== '' ? (string)$s[$key] : $default;
 }
 
+function setting_en(string $key, string $default = ''): string
+{
+    if (lang_code() !== 'en') {
+        return setting($key, $default);
+    }
+    return setting($key . '_en', setting($key, $default));
+}
+
+function pick(array $row, string $field): string
+{
+    $value = (string)($row[$field] ?? '');
+    if (lang_code() !== 'en') {
+        return $value;
+    }
+    $translated = (string)($row[$field . '_en'] ?? '');
+    return $translated !== '' ? $translated : $value;
+}
+
 function about_section(string $key): array
 {
     $row = db_one('SELECT * FROM about WHERE section_key = ?', [$key]);
@@ -70,7 +88,7 @@ function save_setting(string $key, string $value): void
 
 function contact_subjects(): array
 {
-    $list = preg_split('/\r\n|\r|\n/', setting('contact_subjects')) ?: [];
+    $list = preg_split('/\r\n|\r|\n/', setting_en('contact_subjects')) ?: [];
     $list = array_values(array_filter(array_map('trim', $list), static fn ($s) => $s !== ''));
     if (!$list) {
         $list = ['Umum', 'Pendaftaran & Jadwal Dokter', 'BPJS & Administrasi', 'Lainnya'];

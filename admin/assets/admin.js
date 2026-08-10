@@ -12,6 +12,49 @@ $(function () {
     }
   });
 
+  // Auto-translate field (Google Translate free endpoint)
+  $(document).on('click', '.js-auto-translate', function () {
+    var $btn = $(this);
+    var $src = $($btn.data('src'));
+    var $target = $($btn.data('target'));
+    var lang = $btn.data('lang') || 'en';
+    var srcLang = $btn.data('srcLang') || 'id';
+    var text = $.trim($src.val());
+    if (!text) {
+      alert('Kolom sumber masih kosong.');
+      return;
+    }
+    var $icon = $btn.find('i').first();
+    var prevHtml = $btn.html();
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i>Menerjemahkan...');
+    $.ajax({
+      url: 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + srcLang + '&tl=' + lang + '&dt=t&q=' + encodeURIComponent(text),
+      dataType: 'json',
+      success: function (data) {
+        if (!data || !data[0]) {
+          alert('Terjemahan gagal: respons tidak valid.');
+          return;
+        }
+        var out = '', seg, i, orig, m;
+        for (i = 0; i < data[0].length; i++) {
+          seg = data[0][i];
+          if (!seg || !seg[0]) continue;
+          out += seg[0];
+          orig = seg[1] || '';
+          m = orig.match(/\s+$/);
+          if (m) out += m[0];
+        }
+        $target.val(out);
+      },
+      error: function () {
+        alert('Terjemahan gagal. Periksa koneksi internet lalu coba lagi.');
+      },
+      complete: function () {
+        $btn.prop('disabled', false).html(prevHtml);
+      }
+    });
+  });
+
   // Live image preview
   $('input[type=file][data-preview]').on('change', function () {
     var input = this;

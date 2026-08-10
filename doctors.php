@@ -16,7 +16,9 @@ if ($poli > 0) {
     $params[] = $poli;
 }
 if ($search !== '') {
-    $where .= ' AND (name LIKE ? OR specialist LIKE ?)';
+    $where .= ' AND (name LIKE ? OR name_en LIKE ? OR specialist LIKE ? OR specialist_en LIKE ?)';
+    $params[] = "%$search%";
+    $params[] = "%$search%";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
@@ -55,7 +57,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
         <select name="poli" class="form-control">
           <option value="0" <?= selected($poli === 0) ?>><?= e(t('doctors.filter_all')) ?></option>
           <?php foreach ($services as $svc): ?>
-          <option value="<?= (int)$svc['id'] ?>" <?= selected($poli === (int)$svc['id']) ?>><?= e($svc['title']) ?></option>
+          <option value="<?= (int)$svc['id'] ?>" <?= selected($poli === (int)$svc['id']) ?>><?= e(pick($svc, 'title')) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
@@ -73,7 +75,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
             <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
             <div class="doc-body">
               <h5 class="doc-name"><?= e($doc['name']) ?></h5>
-              <div class="doc-spec"><?= e($doc['specialist']) ?></div>
+              <div class="doc-spec"><?= e(pick($doc, 'specialist')) ?></div>
               <?php $dComp = schedule_compact($docSchedules[$doc['id']] ?? []); ?>
               <?php if ($dComp): ?><div class="doc-sched mb-3"><i class="bi bi-clock"></i><?= e($dComp) ?></div><?php endif; ?>
               <a class="btn btn-outline-primary-round btn-sm w-100" href="<?= e(base_url('doctor-detail.php?id=' . $doc['id'])) ?>"><?= e(t('doctors.viewprofile')) ?></a>

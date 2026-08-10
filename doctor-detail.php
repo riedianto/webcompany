@@ -43,7 +43,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
           <div class="doc-photo-wrap" style="height:340px"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
           <div class="doc-body text-center">
             <h4 class="doc-name"><?= e($doc['name']) ?></h4>
-            <div class="doc-spec mb-3"><?= e($doc['specialist']) ?></div>
+            <div class="doc-spec mb-3"><?= e(pick($doc, 'specialist')) ?></div>
             <?php if ($doc['phone']): ?><div class="doc-sched mb-2 justify-content-center"><i class="bi bi-telephone"></i><?= e($doc['phone']) ?></div><?php endif; ?>
             <?php if ($doc['email']): ?><div class="doc-sched mb-2 justify-content-center"><i class="bi bi-envelope"></i><?= e($doc['email']) ?></div><?php endif; ?>
             <?php if ($schedComp): ?><div class="doc-sched justify-content-center"><i class="bi bi-clock"></i><?= e($schedComp) ?></div><?php endif; ?>
@@ -54,7 +54,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
         <span class="section-eyebrow"><?= e(t('doctor.bio')) ?></span>
         <h2 class="section-title mb-4"><?= e($doc['name']) ?></h2>
         <div class="lead" style="color:var(--muted)">
-          <?= $doc['bio'] ? nl2br($doc['bio']) : '<p>' . e(t('doctor.nobio')) . '</p>' ?>
+          <?= pick($doc, 'bio') ? nl2br(pick($doc, 'bio')) : '<p>' . e(t('doctor.nobio')) . '</p>' ?>
         </div>
         <div class="row g-3 mt-3">
           <div class="col-md-6">
@@ -116,7 +116,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
           <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($oPhoto) ?>" alt="<?= e($other['name']) ?>"></div>
           <div class="doc-body">
             <h5 class="doc-name"><?= e($other['name']) ?></h5>
-            <div class="doc-spec"><?= e($other['specialist']) ?></div>
+            <div class="doc-spec"><?= e(pick($other, 'specialist')) ?></div>
             <a class="read-more" href="<?= e(base_url('doctor-detail.php?id=' . $other['id'])) ?>"><?= e(t('doctor.fullprofile')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
           </div>
         </div>

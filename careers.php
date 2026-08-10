@@ -38,8 +38,8 @@ include __DIR__ . '/includes/sections/page_banner.php';
                 <button class="accordion-button <?= $i > 0 ? 'collapsed' : '' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?= $job['id'] ?>" aria-expanded="<?= $i === 0 ? 'true' : 'false' ?>" aria-controls="collapse-<?= $job['id'] ?>">
                   <div class="d-flex flex-wrap align-items-center justify-content-between w-100 pe-3">
                     <div>
-                      <span class="fw-bold d-block" style="color:var(--ink)"><?= e($job['position']) ?></span>
-                      <small class="text-muted"><i class="bi bi-building me-1"></i><?= e($job['department']) ?></small>
+                      <span class="fw-bold d-block" style="color:var(--ink)"><?= e(pick($job, 'position')) ?></span>
+                      <small class="text-muted"><i class="bi bi-building me-1"></i><?= e(pick($job, 'department')) ?></small>
                     </div>
                     <span class="chip ms-2"><i class="bi bi-briefcase me-1"></i><?= e(t('careers.open')) ?></span>
                   </div>
@@ -48,9 +48,9 @@ include __DIR__ . '/includes/sections/page_banner.php';
               <div id="collapse-<?= $job['id'] ?>" class="accordion-collapse collapse <?= $i === 0 ? 'show' : '' ?>" aria-labelledby="heading-<?= $job['id'] ?>" data-bs-parent="#careerAccordion">
                 <div class="accordion-body border-top" style="border-color:var(--border-soft)!important">
                   <h6 class="fw-bold" style="color:var(--primary)"><i class="bi bi-card-list me-2"></i><?= e(t('careers.desc')) ?></h6>
-                  <div class="mb-3" style="color:var(--muted)"><?= nl2br(e($job['description'])) ?></div>
+                  <div class="mb-3" style="color:var(--muted)"><?= nl2br(e(pick($job, 'description'))) ?></div>
                   <h6 class="fw-bold" style="color:var(--primary)"><i class="bi bi-check2-circle me-2"></i><?= e(t('careers.qualification')) ?></h6>
-                  <div class="mb-3" style="color:var(--muted)"><?= nl2br(e($job['requirements'])) ?></div>
+                  <div class="mb-3" style="color:var(--muted)"><?= nl2br(e(pick($job, 'requirements'))) ?></div>
                   <div class="d-flex flex-wrap align-items-center gap-3">
                     <?php if ($job['deadline']): ?>
                     <span class="small text-muted"><i class="bi bi-clock me-1"></i><?= e(t('careers.deadline', [format_date($job['deadline'])])) ?></span>
@@ -83,8 +83,8 @@ include __DIR__ . '/includes/sections/page_banner.php';
           <div class="col-md-6">
             <div class="d-flex justify-content-between align-items-center p-3 rounded-4 border surface-card" style="border-color:var(--border)!important">
               <div>
-                <span class="fw-semibold d-block"><?= e($job['position']) ?></span>
-                <small class="text-muted"><?= e($job['department']) ?></small>
+                <span class="fw-semibold d-block"><?= e(pick($job, 'position')) ?></span>
+                <small class="text-muted"><?= e(pick($job, 'department')) ?></small>
               </div>
               <span class="badge rounded-pill text-bg-secondary"><?= e(t('careers.closed_badge')) ?></span>
             </div>

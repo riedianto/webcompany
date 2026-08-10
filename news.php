@@ -15,13 +15,15 @@ if ($catId > 0) {
     $params[] = $catId;
 }
 if ($search !== '') {
-    $where .= ' AND (p.title LIKE ? OR p.excerpt LIKE ?)';
+    $where .= ' AND (p.title LIKE ? OR p.title_en LIKE ? OR p.excerpt LIKE ? OR p.excerpt_en LIKE ?)';
+    $params[] = "%$search%";
+    $params[] = "%$search%";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
 
 $result = paginate(
-    'SELECT p.*, c.name AS category_name, c.slug AS category_slug FROM posts p LEFT JOIN categories c ON c.id = p.category_id ' . $where . ' ORDER BY p.published_at DESC',
+    'SELECT p.*, c.name AS category_name, c.name_en AS category_name_en, c.slug AS category_slug FROM posts p LEFT JOIN categories c ON c.id = p.category_id ' . $where . ' ORDER BY p.published_at DESC',
     $params,
     6
 );
@@ -53,7 +55,7 @@ include __DIR__ . '/includes/sections/page_banner.php';
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-5" data-aos="fade-up">
       <a href="<?= e(base_url('news.php')) ?>" class="btn btn-sm <?= $catId === 0 ? 'btn-grad' : 'btn-outline-primary-round' ?>"><?= e(t('news.all')) ?></a>
       <?php foreach ($categories as $cat): ?>
-        <a href="<?= e(base_url('news.php?category=' . $cat['id'])) ?>" class="btn btn-sm <?= $catId === (int)$cat['id'] ? 'btn-grad' : 'btn-outline-primary-round' ?>"><?= e($cat['name']) ?></a>
+        <a href="<?= e(base_url('news.php?category=' . $cat['id'])) ?>" class="btn btn-sm <?= $catId === (int)$cat['id'] ? 'btn-grad' : 'btn-outline-primary-round' ?>"><?= e(pick($cat, 'name')) ?></a>
       <?php endforeach; ?>
     </div>
 
@@ -63,14 +65,14 @@ include __DIR__ . '/includes/sections/page_banner.php';
         <?php $pImg = $post['image'] ? img_url('posts', $post['image']) : base_url('assets/img/post-placeholder.svg'); ?>
         <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="<?= $post['id'] % 3 * 100 ?>">
           <div class="news-card">
-            <div class="news-img-wrap"><img class="news-img" src="<?= e($pImg) ?>" alt="<?= e($post['title']) ?>"></div>
+            <div class="news-img-wrap"><img class="news-img" src="<?= e($pImg) ?>" alt="<?= e(pick($post, 'title')) ?>"></div>
             <div class="news-body">
               <div class="news-meta">
-                <?php if ($post['category_name']): ?><span class="chip"><?= e($post['category_name']) ?></span><?php endif; ?>
+                <?php if ($post['category_name']): ?><span class="chip"><?= e(pick($post, 'category_name')) ?></span><?php endif; ?>
                 <span><i class="bi bi-calendar3"></i><?= e(format_date($post['published_at'])) ?></span>
               </div>
-              <h5><a href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e($post['title']) ?></a></h5>
-              <p><?= e(truncate($post['excerpt'] ?: $post['content'], 110)) ?></p>
+              <h5><a href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e(pick($post, 'title')) ?></a></h5>
+              <p><?= e(truncate(pick($post, 'excerpt') ?: pick($post, 'content'), 110)) ?></p>
               <a class="read-more" href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e(t('news.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
           </div>

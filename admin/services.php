@@ -29,8 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $title = trim((string)($_POST['title'] ?? ''));
+    $titleEn = trim((string)($_POST['title_en'] ?? ''));
     $icon = trim((string)($_POST['icon'] ?? ''));
     $description = trim((string)($_POST['description'] ?? ''));
+    $descriptionEn = trim((string)($_POST['description_en'] ?? ''));
     $sort = (int)($_POST['sort'] ?? 0);
     $active = isset($_POST['active']) ? 1 : 0;
 
@@ -43,12 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', $up['error']);
         } else {
             if ($rid > 0) {
-                db_exec('UPDATE services SET title = ?, icon = ?, description = ?, image = ?, sort = ?, active = ? WHERE id = ?',
-                    [$title, $icon, $description, $up['file'], $sort, $active, $rid]);
+                db_exec('UPDATE services SET title = ?, title_en = ?, icon = ?, description = ?, description_en = ?, image = ?, sort = ?, active = ? WHERE id = ?',
+                    [$title, $titleEn, $icon, $description, $descriptionEn, $up['file'], $sort, $active, $rid]);
                 flash('success', 'Layanan berhasil diperbarui.');
             } else {
-                db_exec('INSERT INTO services (title, icon, description, image, sort, active) VALUES (?, ?, ?, ?, ?, ?)',
-                    [$title, $icon, $description, $up['file'], $sort, $active]);
+                db_exec('INSERT INTO services (title, title_en, icon, description, description_en, image, sort, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [$title, $titleEn, $icon, $description, $descriptionEn, $up['file'], $sort, $active]);
                 flash('success', 'Layanan berhasil ditambahkan.');
             }
             redirect(base_url('admin/services.php'));
@@ -71,7 +73,16 @@ include __DIR__ . '/layout/header.php';
           <input type="hidden" name="id" value="<?= (int)($edit['id'] ?? 0) ?>">
           <div class="form-group">
             <label>Nama Layanan <span class="text-danger">*</span></label>
-            <input type="text" name="title" class="form-control" required value="<?= e($edit['title'] ?? '') ?>">
+            <input type="text" name="title" id="svcTitle" class="form-control" required value="<?= e($edit['title'] ?? '') ?>">
+          </div>
+          <div class="form-group">
+            <label>Nama Layanan (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="title_en" id="svcTitleEn" class="form-control" value="<?= e($edit['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#svcTitle" data-target="#svcTitleEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Ikon (Bootstrap Icons)</label>
@@ -86,7 +97,16 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Deskripsi</label>
-            <textarea name="description" class="form-control" rows="3"><?= e($edit['description'] ?? '') ?></textarea>
+            <textarea name="description" id="svcDesc" class="form-control" rows="3"><?= e($edit['description'] ?? '') ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Deskripsi (EN)</label>
+            <div class="input-group">
+              <textarea name="description_en" id="svcDescEn" class="form-control" rows="3"><?= e($edit['description_en'] ?? '') ?></textarea>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#svcDesc" data-target="#svcDescEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Gambar (opsional)</label>
@@ -131,7 +151,7 @@ include __DIR__ . '/layout/header.php';
               <tr>
                 <td><?= (int)$r['sort'] ?></td>
                 <td style="font-size:1.2rem;color:var(--accent)"><i class="<?= e($r['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></td>
-                <td class="font-weight-bold"><?= e($r['title']) ?></td>
+                <td class="font-weight-bold"><?= e($r['title']) ?><?php if (empty($r['title_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td>
                   <?php if ((int)$r['active'] === 1): ?><span class="badge badge-soft-success">Aktif</span>
                   <?php else: ?><span class="badge badge-soft-danger">Nonaktif</span><?php endif; ?>

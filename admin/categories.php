@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $name = trim((string)($_POST['name'] ?? ''));
+    $nameEn = trim((string)($_POST['name_en'] ?? ''));
     $slug = trim((string)($_POST['slug'] ?? ''));
 
     if ($name === '') {
@@ -44,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', 'Slug sudah digunakan. Gunakan nama yang berbeda.');
         } else {
             if ($rid > 0) {
-                db_exec('UPDATE categories SET name = ?, slug = ? WHERE id = ?', [$name, $slug, $rid]);
+                db_exec('UPDATE categories SET name = ?, name_en = ?, slug = ? WHERE id = ?', [$name, $nameEn, $slug, $rid]);
                 flash('success', 'Kategori berhasil diperbarui.');
             } else {
-                db_exec('INSERT INTO categories (name, slug) VALUES (?, ?)', [$name, $slug]);
+                db_exec('INSERT INTO categories (name, name_en, slug) VALUES (?, ?, ?)', [$name, $nameEn, $slug]);
                 flash('success', 'Kategori berhasil ditambahkan.');
             }
             redirect(base_url('admin/categories.php'));
@@ -71,6 +72,15 @@ include __DIR__ . '/layout/header.php';
           <div class="form-group">
             <label>Nama Kategori <span class="text-danger">*</span></label>
             <input type="text" name="name" id="catName" class="form-control" required value="<?= e($edit['name'] ?? '') ?>">
+          </div>
+          <div class="form-group">
+            <label>Nama Kategori (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="name_en" id="catNameEn" class="form-control" value="<?= e($edit['name_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#catName" data-target="#catNameEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Slug (URL)</label>
@@ -98,7 +108,7 @@ include __DIR__ . '/layout/header.php';
             <tbody>
               <?php foreach ($rows as $r): ?>
               <tr>
-                <td class="font-weight-bold"><?= e($r['name']) ?></td>
+                <td class="font-weight-bold"><?= e($r['name']) ?><?php if (empty($r['name_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td class="text-muted"><?= e($r['slug']) ?></td>
                 <td><span class="badge badge-soft-info"><?= (int)$r['total_posts'] ?></span></td>
                 <td class="text-right">

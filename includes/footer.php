@@ -9,7 +9,7 @@ declare(strict_types=1);
           <img src="<?= e(setting('site_logo') ? img_url('logos', setting('site_logo')) : base_url('assets/img/logo.svg')) ?>" alt="<?= e(setting('site_name')) ?>" class="brand-logo surface-card" style="padding:4px">
           <span class="footer-brand-name ms-2"><?= e(setting('site_name')) ?></span>
         </div>
-        <p class="small"><?= e(setting('site_description')) ?></p>
+        <p class="small"><?= e(setting_en('site_description')) ?></p>
         <div class="footer-social mt-3">
           <?php if (setting('site_instagram')): ?><a href="<?= e(setting('site_instagram')) ?>" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a><?php endif; ?>
           <?php if (setting('site_facebook')): ?><a href="<?= e(setting('site_facebook')) ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a><?php endif; ?>
@@ -33,10 +33,10 @@ declare(strict_types=1);
       </div>
       <div class="col-lg-3">
         <h6><?= e(t('footer.heading.contact')) ?></h6>
-        <p class="small mb-2"><i class="bi bi-geo-alt-fill me-2" style="color:var(--secondary)"></i><?= e(setting('site_address')) ?></p>
+        <p class="small mb-2"><i class="bi bi-geo-alt-fill me-2" style="color:var(--secondary)"></i><?= e(setting_en('site_address')) ?></p>
         <p class="small mb-2"><i class="bi bi-telephone-fill me-2" style="color:var(--secondary)"></i><?= e(setting('site_phone')) ?></p>
         <p class="small mb-2"><i class="bi bi-envelope-fill me-2" style="color:var(--secondary)"></i><?= e(setting('site_email')) ?></p>
-        <p class="small mb-0"><i class="bi bi-clock-fill me-2" style="color:var(--secondary)"></i><?= e(setting('site_hours')) ?></p>
+        <p class="small mb-0"><i class="bi bi-clock-fill me-2" style="color:var(--secondary)"></i><?= e(setting_en('site_hours')) ?></p>
       </div>
     </div>
   </div>

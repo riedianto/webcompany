@@ -17,7 +17,7 @@ if (!$item) {
     redirect(base_url('services.php'));
 }
 
-$pageTitle = $item['title'];
+$pageTitle = pick($item, 'title');
 $active = 'services';
 
 include __DIR__ . '/includes/header.php';
@@ -27,7 +27,7 @@ $bannerBg = $item['image'] ? img_url($subdir, $item['image']) : '';
 $crumbs = [
     ['label' => t('banner.home'), 'url' => base_url('index.php')],
     ['label' => t('nav.services'), 'url' => base_url('services.php')],
-    ['label' => $item['title'], 'url' => ''],
+    ['label' => pick($item, 'title'), 'url' => ''],
 ];
 include __DIR__ . '/includes/sections/page_banner.php';
 
@@ -67,7 +67,7 @@ $serviceDoctors = $type === 'service'
           <div class="carousel-inner">
             <?php foreach ($slides as $si => $slide): ?>
             <div class="carousel-item <?= $si === 0 ? 'active' : '' ?>">
-              <img src="<?= e(img_url('facilities', $slide)) ?>" alt="<?= e($item['title']) ?>" style="width:100%;max-height:420px;object-fit:cover;display:block">
+              <img src="<?= e(img_url('facilities', $slide)) ?>" alt="<?= e(pick($item, 'title')) ?>" style="width:100%;max-height:420px;object-fit:cover;display:block">
             </div>
             <?php endforeach; ?>
           </div>
@@ -82,14 +82,14 @@ $serviceDoctors = $type === 'service'
         </div>
         <?php elseif ($itemImg): ?>
         <div class="rounded-4 overflow-hidden shadow" style="border-radius:var(--radius-lg)">
-          <img src="<?= e($itemImg) ?>" alt="<?= e($item['title']) ?>" style="width:100%;max-height:420px;object-fit:cover;display:block">
+          <img src="<?= e($itemImg) ?>" alt="<?= e(pick($item, 'title')) ?>" style="width:100%;max-height:420px;object-fit:cover;display:block">
         </div>
         <?php endif; ?>
       </div>
       <div class="col-lg-5" data-aos="fade-left" data-aos-delay="120">
         <span class="icon-wrap" style="width:64px;height:64px;font-size:1.8rem"><i class="<?= e($icon) ?>"></i></span>
-        <h1 class="section-title mt-3 mb-3"><?= e($item['title']) ?></h1>
-        <div style="color:var(--muted)"><?= nl2br_e($item['description']) ?></div>
+        <h1 class="section-title mt-3 mb-3"><?= e(pick($item, 'title')) ?></h1>
+        <div style="color:var(--muted)"><?= nl2br_e(pick($item, 'description')) ?></div>
         <div class="mt-4">
           <a href="<?= e(base_url('services.php')) ?>" class="btn btn-outline-primary-round"><i class="bi bi-arrow-left me-1"></i><?= e(t('detail.back')) ?></a>
           <a href="<?= e(base_url('contact.php')) ?>" class="btn btn-grad ms-2"><i class="bi bi-envelope me-1"></i><?= e(t('detail.contact')) ?></a>
@@ -114,7 +114,7 @@ $serviceDoctors = $type === 'service'
             </a>
             <div class="doc-body">
               <h5 class="doc-name"><?= e($doc['name']) ?></h5>
-              <div class="doc-spec"><?= e($doc['specialist']) ?></div>
+              <div class="doc-spec"><?= e(pick($doc, 'specialist')) ?></div>
               <?php if ($dSched): ?><div class="doc-sched"><i class="bi bi-clock"></i><?= e($dSched) ?></div><?php endif; ?>
               <a class="read-more" href="<?= e(base_url('doctor-detail.php?id=' . (int)$doc['id'])) ?>"><?= e(t('about.fullprofile')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
@@ -136,10 +136,10 @@ $serviceDoctors = $type === 'service'
         <?php $rImg = $r['image'] ? img_url($subdir, $r['image']) : ''; ?>
         <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="<?= ((int)$r['id'] % 4) * 80 ?>">
           <a class="icon-card icon-card-link" href="<?= e(base_url('detail.php?type=' . $type . '&id=' . (int)$r['id'])) ?>">
-            <?php if ($rImg): ?><img src="<?= e($rImg) ?>" alt="<?= e($r['title']) ?>" class="rounded-4 mb-3" style="width:100%;height:120px;object-fit:cover"><?php else: ?><div class="icon-card-placeholder rounded-4 mb-3" style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;background:var(--grad);color:#fff;font-size:2.2rem;border:1px solid var(--border)"><i class="<?= e($r['icon'] ?: $icon) ?>"></i></div><?php endif; ?>
+            <?php if ($rImg): ?><img src="<?= e($rImg) ?>" alt="<?= e(pick($r, 'title')) ?>" class="rounded-4 mb-3" style="width:100%;height:120px;object-fit:cover"><?php else: ?><div class="icon-card-placeholder rounded-4 mb-3" style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;background:var(--grad);color:#fff;font-size:2.2rem;border:1px solid var(--border)"><i class="<?= e($r['icon'] ?: $icon) ?>"></i></div><?php endif; ?>
             <span class="icon-wrap"><i class="<?= e($r['icon'] ?: $icon) ?>"></i></span>
-            <h5><?= e($r['title']) ?></h5>
-            <p><?= e(truncate($r['description'], 90)) ?></p>
+            <h5><?= e(pick($r, 'title')) ?></h5>
+            <p><?= e(truncate(pick($r, 'description'), 90)) ?></p>
           </a>
         </div>
         <?php endforeach; ?>

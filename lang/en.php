@@ -97,7 +97,7 @@ return [
     'services.facilities.eyebrow' => 'Facilities',
     'services.facilities.title' => 'Supporting Facilities',
     'services.facilities.sub' => 'Modern facilities that support the best medical care for patients and their families.',
-    'services.readmore' => 'View Details',
+    'services.readmore' => 'Read More',
 
     /* ---------- Service / Facility Detail ---------- */
     'detail.back' => 'Back',

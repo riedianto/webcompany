@@ -36,10 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim((string)($_POST['name'] ?? ''));
     $specialist = trim((string)($_POST['specialist'] ?? ''));
+    $specialistEn = trim((string)($_POST['specialist_en'] ?? ''));
     $serviceId = (int)($_POST['service_id'] ?? 0);
     $email = trim((string)($_POST['email'] ?? ''));
     $phone = trim((string)($_POST['phone'] ?? ''));
     $bio = trim((string)($_POST['bio'] ?? ''));
+    $bioEn = trim((string)($_POST['bio_en'] ?? ''));
     $sort = (int)($_POST['sort'] ?? 0);
     $active = isset($_POST['active']) ? 1 : 0;
     $schedStart = $_POST['sched_start'] ?? [];
@@ -56,13 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', $up['error']);
         } else {
             if ($rid > 0) {
-                db_exec('UPDATE doctors SET name = ?, specialist = ?, service_id = ?, photo = ?, email = ?, phone = ?, bio = ?, sort = ?, active = ? WHERE id = ?',
-                    [$name, $specialist, $serviceId, $up['file'], $email, $phone, $bio, $sort, $active, $rid]);
+                db_exec('UPDATE doctors SET name = ?, specialist = ?, specialist_en = ?, service_id = ?, photo = ?, email = ?, phone = ?, bio = ?, bio_en = ?, sort = ?, active = ? WHERE id = ?',
+                    [$name, $specialist, $specialistEn, $serviceId, $up['file'], $email, $phone, $bio, $bioEn, $sort, $active, $rid]);
                 save_doctor_schedules($rid, $schedStart, $schedEnd);
                 flash('success', 'Dokter berhasil diperbarui.');
             } else {
-                db_exec('INSERT INTO doctors (name, specialist, service_id, photo, email, phone, bio, sort, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [$name, $specialist, $serviceId, $up['file'], $email, $phone, $bio, $sort, $active]);
+                db_exec('INSERT INTO doctors (name, specialist, specialist_en, service_id, photo, email, phone, bio, bio_en, sort, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [$name, $specialist, $specialistEn, $serviceId, $up['file'], $email, $phone, $bio, $bioEn, $sort, $active]);
                 save_doctor_schedules((int)db()->lastInsertId(), $schedStart, $schedEnd);
                 flash('success', 'Dokter berhasil ditambahkan.');
             }
@@ -100,7 +102,16 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Spesialisasi</label>
-            <input type="text" name="specialist" class="form-control" value="<?= e($edit['specialist'] ?? '') ?>" placeholder="Penyakit Dalam">
+            <input type="text" name="specialist" id="docSpec" class="form-control" value="<?= e($edit['specialist'] ?? '') ?>" placeholder="Penyakit Dalam">
+          </div>
+          <div class="form-group">
+            <label>Spesialisasi (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="specialist_en" id="docSpecEn" class="form-control" value="<?= e($edit['specialist_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#docSpec" data-target="#docSpecEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Layanan / Poli</label>
@@ -151,7 +162,16 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Biografi</label>
-            <textarea name="bio" class="form-control" rows="4"><?= e($edit['bio'] ?? '') ?></textarea>
+            <textarea name="bio" id="docBio" class="form-control" rows="4"><?= e($edit['bio'] ?? '') ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Biografi (EN)</label>
+            <div class="input-group">
+              <textarea name="bio_en" id="docBioEn" class="form-control" rows="4"><?= e($edit['bio_en'] ?? '') ?></textarea>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#docBio" data-target="#docBioEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-6">
@@ -192,7 +212,7 @@ include __DIR__ . '/layout/header.php';
               <tr>
                 <td><img src="<?= e($rPhoto) ?>" class="img-preview-sm rounded-circle" alt=""></td>
                 <td class="font-weight-bold"><?= e($r['name']) ?></td>
-                <td><?= e($r['specialist']) ?></td>
+                <td><?= e($r['specialist']) ?><?php if (empty($r['specialist_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td><?= isset($serviceMap[(int)$r['service_id']]) ? e($serviceMap[(int)$r['service_id']]) : '<span class="text-muted">-</span>' ?></td>
                 <td class="text-muted small"><?= $rSched !== '' ? e($rSched) : '-' ?></td>
                 <td>

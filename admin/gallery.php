@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $title = trim((string)($_POST['title'] ?? ''));
+    $titleEn = trim((string)($_POST['title_en'] ?? ''));
     $sort = (int)($_POST['sort'] ?? 0);
     $active = isset($_POST['active']) ? 1 : 0;
 
@@ -40,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash('error', 'Gambar galeri wajib diunggah.');
     } else {
         if ($rid > 0) {
-            db_exec('UPDATE gallery SET title = ?, image = ?, sort = ?, active = ? WHERE id = ?',
-                [$title, $up['file'], $sort, $active, $rid]);
+            db_exec('UPDATE gallery SET title = ?, title_en = ?, image = ?, sort = ?, active = ? WHERE id = ?',
+                [$title, $titleEn, $up['file'], $sort, $active, $rid]);
             flash('success', 'Gambar galeri berhasil diperbarui.');
         } else {
-            db_exec('INSERT INTO gallery (title, image, sort, active) VALUES (?, ?, ?, ?)',
-                [$title, $up['file'], $sort, $active]);
+            db_exec('INSERT INTO gallery (title, title_en, image, sort, active) VALUES (?, ?, ?, ?, ?)',
+                [$title, $titleEn, $up['file'], $sort, $active]);
             flash('success', 'Gambar galeri berhasil ditambahkan.');
         }
         redirect(base_url('admin/gallery.php'));
@@ -73,7 +74,16 @@ include __DIR__ . '/layout/header.php';
           </div>
           <div class="form-group">
             <label>Judul / Keterangan (opsional)</label>
-            <input type="text" name="title" class="form-control" value="<?= e($edit['title'] ?? '') ?>">
+            <input type="text" name="title" id="galTitle" class="form-control" value="<?= e($edit['title'] ?? '') ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="title_en" id="galTitleEn" class="form-control" value="<?= e($edit['title_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#galTitle" data-target="#galTitleEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-6">
@@ -113,7 +123,7 @@ include __DIR__ . '/layout/header.php';
                 <td>
                   <?php if ($r['image']): ?><img src="<?= e(img_url('gallery', $r['image'])) ?>" class="img-preview-sm" alt=""><?php else: ?><span class="text-muted small">-</span><?php endif; ?>
                 </td>
-                <td class="font-weight-bold"><?= $r['title'] !== '' ? e($r['title']) : '<span class="text-muted">-</span>' ?></td>
+                <td class="font-weight-bold"><?= $r['title'] !== '' ? e($r['title']) : '<span class="text-muted">-</span>' ?><?php if (empty($r['title_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td>
                   <?php if ((int)$r['active'] === 1): ?><span class="badge badge-soft-success">Aktif</span>
                   <?php else: ?><span class="badge badge-soft-danger">Nonaktif</span><?php endif; ?>

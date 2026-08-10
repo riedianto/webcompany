@@ -21,7 +21,7 @@ if ($facIds) {
 }
 $doctors = db_all('SELECT * FROM doctors WHERE active = 1 ORDER BY sort ASC LIMIT 6');
 $docSchedules = get_schedules_map(array_column($doctors, 'id'));
-$news = db_all("SELECT p.*, c.name AS category_name FROM posts p LEFT JOIN categories c ON c.id = p.category_id WHERE p.status = 'published' AND p.published_at <= NOW() ORDER BY p.published_at DESC LIMIT 5");
+$news = db_all("SELECT p.*, c.name AS category_name, c.name_en AS category_name_en FROM posts p LEFT JOIN categories c ON c.id = p.category_id WHERE p.status = 'published' AND p.published_at <= NOW() ORDER BY p.published_at DESC LIMIT 5");
 $partners = db_all('SELECT * FROM partners WHERE active = 1 ORDER BY sort ASC');
 
 include __DIR__ . '/includes/header.php';
@@ -86,8 +86,8 @@ include __DIR__ . '/includes/header.php';
       </div>
       <div class="col-lg-6" data-aos="fade-left" data-aos-delay="150">
         <span class="section-eyebrow"><?= e(t('home.about.eyebrow')) ?></span>
-        <h2 class="section-title"><?= e(setting('home_about_title')) ?></h2>
-        <p class="section-sub"><?= nl2br_e(setting('home_about_text')) ?></p>
+        <h2 class="section-title"><?= e(setting_en('home_about_title')) ?></h2>
+        <p class="section-sub"><?= nl2br_e(setting_en('home_about_text')) ?></p>
         <div class="row g-3 mt-3">
           <div class="col-sm-6">
             <div class="d-flex align-items-center gap-3 p-3 rounded-4" style="background:var(--grad-soft)">
@@ -145,16 +145,20 @@ include __DIR__ . '/includes/header.php';
         <?php for ($r = 0; $r < 2; $r++): ?>
           <?php foreach ($services as $svc): ?>
           <?php $sImg = $svc['image'] ? img_url('services', $svc['image']) : ''; ?>
-          <a class="icon-card icon-card-link svc-card" href="<?= e(base_url('detail.php?type=service&id=' . $svc['id'])) ?>">
+          <?php $svcUrl = base_url('detail.php?type=service&id=' . $svc['id']); ?>
+          <div class="icon-card svc-card">
             <?php if ($sImg): ?>
-            <img src="<?= e($sImg) ?>" alt="<?= e($svc['title']) ?>" class="icon-card-img rounded-4 mb-3">
+            <a class="icon-card-top" href="<?= e($svcUrl) ?>"><img src="<?= e($sImg) ?>" alt="<?= e(pick($svc, 'title')) ?>" class="icon-card-img rounded-4 mb-3"></a>
             <?php else: ?>
             <div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></div>
             <?php endif; ?>
-            <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
-            <h5><?= e($svc['title']) ?></h5>
-            <p><?= e($svc['description']) ?></p>
-          </a>
+            <a class="icon-card-top" href="<?= e($svcUrl) ?>">
+              <span class="icon-wrap"><i class="<?= e($svc['icon'] ?: 'bi bi-heart-pulse-fill') ?>"></i></span>
+              <h5><?= e(pick($svc, 'title')) ?></h5>
+            </a>
+            <p class="text-clamp"><?= e(truncate(pick($svc, 'description'), 120)) ?></p>
+            <a class="read-more" href="<?= e($svcUrl) ?>"><?= e(t('services.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+          </div>
           <?php endforeach; ?>
         <?php endfor; ?>
       </div>
@@ -178,15 +182,16 @@ include __DIR__ . '/includes/header.php';
           <?php $fImg = $fac['image'] ? img_url('facilities', $fac['image']) : ($facImagesByFac[(int)$fac['id']][0] ?? '' ? img_url('facilities', $facImagesByFac[(int)$fac['id']][0]) : ''); ?>
           <div class="icon-card icon-card-link fac-card">
             <?php if ($fImg): ?>
-            <a class="icon-card-top" href="<?= $facUrl ?>"><img src="<?= e($fImg) ?>" alt="<?= e($fac['title']) ?>" class="icon-card-img rounded-4 mb-3"></a>
+            <a class="icon-card-top" href="<?= $facUrl ?>"><img src="<?= e($fImg) ?>" alt="<?= e(pick($fac, 'title')) ?>" class="icon-card-img rounded-4 mb-3"></a>
             <?php else: ?>
             <div class="icon-card-img icon-card-placeholder rounded-4 mb-3"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></div>
             <?php endif; ?>
             <a class="icon-card-top" href="<?= $facUrl ?>">
               <span class="icon-wrap"><i class="<?= e($fac['icon'] ?: 'bi bi-building') ?>"></i></span>
-              <h5><?= e($fac['title']) ?></h5>
+              <h5><?= e(pick($fac, 'title')) ?></h5>
             </a>
-            <p><?= e($fac['description']) ?></p>
+            <p class="text-clamp"><?= e(truncate(pick($fac, 'description'), 120)) ?></p>
+            <a class="read-more" href="<?= $facUrl ?>"><?= e(t('services.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
           </div>
           <?php endforeach; ?>
         <?php endfor; ?>
@@ -248,7 +253,7 @@ include __DIR__ . '/includes/header.php';
             <div class="doc-photo-wrap"><img class="doc-photo" src="<?= e($photo) ?>" alt="<?= e($doc['name']) ?>"></div>
             <div class="doc-body">
               <h5 class="doc-name"><?= e($doc['name']) ?></h5>
-              <div class="doc-spec"><?= e($doc['specialist']) ?></div>
+              <div class="doc-spec"><?= e(pick($doc, 'specialist')) ?></div>
               <?php $dComp = schedule_compact($docSchedules[$doc['id']] ?? []); ?>
               <?php if ($dComp): ?>
               <div class="doc-sched"><i class="bi bi-clock"></i><?= e($dComp) ?></div>
@@ -278,14 +283,14 @@ include __DIR__ . '/includes/header.php';
           <?php foreach ($news as $post): ?>
           <?php $pImg = $post['image'] ? img_url('posts', $post['image']) : base_url('assets/img/post-placeholder.svg'); ?>
           <div class="news-card news-card-item">
-            <div class="news-img-wrap"><img class="news-img" src="<?= e($pImg) ?>" alt="<?= e($post['title']) ?>"></div>
+            <div class="news-img-wrap"><img class="news-img" src="<?= e($pImg) ?>" alt="<?= e(pick($post, 'title')) ?>"></div>
             <div class="news-body">
               <div class="news-meta">
-                <?php if ($post['category_name']): ?><span class="chip"><?= e($post['category_name']) ?></span><?php endif; ?>
+                <?php if ($post['category_name']): ?><span class="chip"><?= e(pick($post, 'category_name')) ?></span><?php endif; ?>
                 <span><i class="bi bi-calendar3"></i><?= e(format_date($post['published_at'])) ?></span>
               </div>
-              <h5><a href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e($post['title']) ?></a></h5>
-              <p><?= e(truncate($post['excerpt'] ?: $post['content'], 110)) ?></p>
+              <h5><a href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e(pick($post, 'title')) ?></a></h5>
+              <p class="text-clamp"><?= e(truncate(pick($post, 'excerpt') ?: pick($post, 'content'), 110)) ?></p>
               <a class="read-more" href="<?= e(base_url('news-detail.php?id=' . $post['id'])) ?>"><?= e(t('news.readmore')) ?> <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
           </div>
@@ -310,7 +315,7 @@ include __DIR__ . '/includes/header.php';
       <?php for ($r = 0; $r < 2; $r++): ?>
         <?php foreach ($partners as $pt): ?>
           <a class="partner-logo" href="<?= e($pt['website'] ?: '#') ?>" target="_blank" rel="noopener">
-            <?php if ($pt['logo']): ?><img src="<?= e(img_url('partners', $pt['logo'])) ?>" alt="<?= e($pt['name']) ?>"><?php else: ?><?= e($pt['name']) ?><?php endif; ?>
+            <?php if ($pt['logo']): ?><img src="<?= e(img_url('partners', $pt['logo'])) ?>" alt="<?= e(pick($pt, 'name')) ?>"><?php else: ?><?= e(pick($pt, 'name')) ?><?php endif; ?>
           </a>
         <?php endforeach; ?>
       <?php endfor; ?>

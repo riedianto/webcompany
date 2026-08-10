@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $name = trim((string)($_POST['name'] ?? ''));
+    $nameEn = trim((string)($_POST['name_en'] ?? ''));
     $website = trim((string)($_POST['website'] ?? ''));
     $sort = (int)($_POST['sort'] ?? 0);
     $active = isset($_POST['active']) ? 1 : 0;
@@ -44,12 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', $up['error']);
         } else {
             if ($rid > 0) {
-                db_exec('UPDATE partners SET name = ?, logo = ?, website = ?, sort = ?, active = ? WHERE id = ?',
-                    [$name, $up['file'], $website, $sort, $active, $rid]);
+                db_exec('UPDATE partners SET name = ?, name_en = ?, logo = ?, website = ?, sort = ?, active = ? WHERE id = ?',
+                    [$name, $nameEn, $up['file'], $website, $sort, $active, $rid]);
                 flash('success', 'Rekanan berhasil diperbarui.');
             } else {
-                db_exec('INSERT INTO partners (name, logo, website, sort, active) VALUES (?, ?, ?, ?, ?)',
-                    [$name, $up['file'], $website, $sort, $active]);
+                db_exec('INSERT INTO partners (name, name_en, logo, website, sort, active) VALUES (?, ?, ?, ?, ?, ?)',
+                    [$name, $nameEn, $up['file'], $website, $sort, $active]);
                 flash('success', 'Rekanan berhasil ditambahkan.');
             }
             redirect(base_url('admin/partners.php'));
@@ -72,7 +73,16 @@ include __DIR__ . '/layout/header.php';
           <input type="hidden" name="id" value="<?= (int)($edit['id'] ?? 0) ?>">
           <div class="form-group">
             <label>Nama Rekanan / Instansi <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" required value="<?= e($edit['name'] ?? '') ?>">
+            <input type="text" name="name" id="ptName" class="form-control" required value="<?= e($edit['name'] ?? '') ?>">
+          </div>
+          <div class="form-group">
+            <label>Nama Rekanan / Instansi (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="name_en" id="ptNameEn" class="form-control" value="<?= e($edit['name_en'] ?? '') ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#ptName" data-target="#ptNameEn" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Logo (opsional)</label>
@@ -123,7 +133,7 @@ include __DIR__ . '/layout/header.php';
                 <td>
                   <?php if ($r['logo']): ?><img src="<?= e(img_url('partners', $r['logo'])) ?>" class="img-preview-sm" alt=""><?php else: ?><span class="text-muted small">-</span><?php endif; ?>
                 </td>
-                <td class="font-weight-bold"><?= e($r['name']) ?></td>
+                <td class="font-weight-bold"><?= e($r['name']) ?><?php if (empty($r['name_en'])): ?> <span class="badge badge-soft-warning" title="Belum diterjemahkan ke Inggris">EN-</span><?php endif; ?></td>
                 <td class="small"><?= $r['website'] ? '<a href="' . e($r['website']) . '" target="_blank" rel="noopener">' . e(parse_url($r['website'], PHP_URL_HOST)) . '</a>' : '-' ?></td>
                 <td>
                   <?php if ((int)$r['active'] === 1): ?><span class="badge badge-soft-success">Aktif</span>

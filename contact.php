@@ -76,7 +76,7 @@ $subjects = contact_subjects();
           <span class="cc-icon"><i class="bi bi-geo-alt-fill"></i></span>
           <div>
             <h6 class="mb-1"><?= e(t('contact.address')) ?></h6>
-            <p class="mb-0 small" style="color:var(--muted)"><?= e(setting('site_address')) ?></p>
+            <p class="mb-0 small" style="color:var(--muted)"><?= e(setting_en('site_address', setting('site_address'))) ?></p>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ $subjects = contact_subjects();
           <span class="cc-icon"><i class="bi bi-clock-fill"></i></span>
           <div>
             <h6 class="mb-1"><?= e(t('contact.hours')) ?></h6>
-            <p class="mb-0 small" style="color:var(--muted)"><?= e(setting('site_hours')) ?></p>
+            <p class="mb-0 small" style="color:var(--muted)"><?= e(setting_en('site_hours')) ?></p>
           </div>
         </div>
       </div>

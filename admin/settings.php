@@ -25,12 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
     $textFields = [
-        'site_name', 'site_tagline', 'site_description',
-        'site_address', 'site_phone', 'site_whatsapp', 'site_email', 'site_hours',
+        'site_name', 'site_tagline', 'site_tagline_en', 'site_description', 'site_description_en',
+        'site_address', 'site_address_en', 'site_phone', 'site_whatsapp', 'site_email', 'site_hours', 'site_hours_en',
         'site_maps', 'site_instagram', 'site_facebook', 'site_youtube', 'site_twitter',
-        'site_announcement', 'home_about_title', 'home_about_text',
+        'site_announcement', 'site_announcement_en', 'home_about_title', 'home_about_title_en', 'home_about_text', 'home_about_text_en',
         'stat_years', 'stat_patients', 'stat_doctors', 'stat_departments',
-        'contact_subjects', 'register_url',
+        'contact_subjects', 'contact_subjects_en', 'register_url',
         'reply_email_template', 'reply_wa_template',
     ];
 
@@ -105,11 +105,25 @@ $bannerVal = setting('banner_default_image');
           </div>
           <div class="form-group">
             <label>Tagline</label>
-            <input type="text" name="site_tagline" class="form-control" value="<?= e(setting('site_tagline')) ?>">
+            <input type="text" name="site_tagline" id="site_tagline" class="form-control" value="<?= e(setting('site_tagline')) ?>">
+          </div>
+          <div class="form-group">
+            <label>Tagline (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="site_tagline_en" id="site_tagline_en" class="form-control" value="<?= e(setting('site_tagline_en')) ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#site_tagline" data-target="#site_tagline_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Deskripsi Website</label>
-            <textarea name="site_description" class="form-control" rows="3"><?= e(setting('site_description')) ?></textarea>
+            <textarea name="site_description" id="site_description" class="form-control" rows="3"><?= e(setting('site_description')) ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Deskripsi Website (EN - terjemahan Inggris)</label>
+            <textarea name="site_description_en" id="site_description_en" class="form-control" rows="3"><?= e(setting('site_description_en')) ?></textarea>
+            <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#site_description" data-target="#site_description_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
           </div>
           <div class="row">
             <div class="col-md-4">
@@ -165,7 +179,16 @@ $bannerVal = setting('banner_default_image');
             <div class="col-md-6">
               <div class="form-group">
                 <label>Alamat</label>
-                <input type="text" name="site_address" class="form-control" value="<?= e(setting('site_address')) ?>">
+                <input type="text" name="site_address" id="site_address" class="form-control" value="<?= e(setting('site_address')) ?>">
+              </div>
+              <div class="form-group">
+                <label>Alamat (EN - terjemahan Inggris)</label>
+                <div class="input-group">
+                  <input type="text" name="site_address_en" id="site_address_en" class="form-control" value="<?= e(setting('site_address_en')) ?>">
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#site_address" data-target="#site_address_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -196,7 +219,16 @@ $bannerVal = setting('banner_default_image');
             <div class="col-12">
               <div class="form-group">
                 <label>Jam Operasional</label>
-                <input type="text" name="site_hours" class="form-control" value="<?= e(setting('site_hours')) ?>">
+                <input type="text" name="site_hours" id="site_hours" class="form-control" value="<?= e(setting('site_hours')) ?>">
+              </div>
+              <div class="form-group">
+                <label>Jam Operasional (EN)</label>
+                <div class="input-group">
+                  <input type="text" name="site_hours_en" id="site_hours_en" class="form-control" value="<?= e(setting('site_hours_en')) ?>">
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#site_hours" data-target="#site_hours_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-12">
@@ -236,8 +268,13 @@ $bannerVal = setting('banner_default_image');
             <div class="col-12">
               <div class="form-group">
                 <label>Subjek Formulir Kontak (satu opsi per baris)</label>
-                <textarea name="contact_subjects" class="form-control" rows="4" placeholder="Umum&#10;Pendaftaran &amp; Jadwal Dokter&#10;BPJS &amp; Administrasi&#10;Lainnya"><?= e(setting('contact_subjects')) ?></textarea>
+                <textarea name="contact_subjects" id="contact_subjects" class="form-control" rows="4" placeholder="Umum&#10;Pendaftaran &amp; Jadwal Dokter&#10;BPJS &amp; Administrasi&#10;Lainnya"><?= e(setting('contact_subjects')) ?></textarea>
                 <small class="icon-helper">Tulis satu pilihan subjek di setiap baris. Muncul sebagai dropdown di halaman Kontak. Kosongkan untuk memakai daftar bawaan.</small>
+              </div>
+              <div class="form-group">
+                <label>Subjek Formulir Kontak (EN)</label>
+                <textarea name="contact_subjects_en" id="contact_subjects_en" class="form-control" rows="4"><?= e(setting('contact_subjects_en')) ?></textarea>
+                <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#contact_subjects" data-target="#contact_subjects_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
               </div>
             </div>
           </div>
@@ -249,15 +286,38 @@ $bannerVal = setting('banner_default_image');
         <div class="card-body">
           <div class="form-group">
             <label>Pengumuman (bar berjalan di atas)</label>
-            <input type="text" name="site_announcement" class="form-control" value="<?= e(setting('site_announcement')) ?>">
+            <input type="text" name="site_announcement" id="site_announcement" class="form-control" value="<?= e(setting('site_announcement')) ?>">
+          </div>
+          <div class="form-group">
+            <label>Pengumuman (EN - terjemahan Inggris)</label>
+            <div class="input-group">
+              <input type="text" name="site_announcement_en" id="site_announcement_en" class="form-control" value="<?= e(setting('site_announcement_en')) ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#site_announcement" data-target="#site_announcement_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Judul Sambutan Beranda</label>
-            <input type="text" name="home_about_title" class="form-control" value="<?= e(setting('home_about_title')) ?>">
+            <input type="text" name="home_about_title" id="home_about_title" class="form-control" value="<?= e(setting('home_about_title')) ?>">
+          </div>
+          <div class="form-group">
+            <label>Judul Sambutan Beranda (EN)</label>
+            <div class="input-group">
+              <input type="text" name="home_about_title_en" id="home_about_title_en" class="form-control" value="<?= e(setting('home_about_title_en')) ?>">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-accent js-auto-translate" data-src="#home_about_title" data-target="#home_about_title_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Teks Sambutan Beranda</label>
-            <textarea name="home_about_text" class="form-control" rows="4"><?= e(setting('home_about_text')) ?></textarea>
+            <textarea name="home_about_text" id="home_about_text" class="form-control" rows="4"><?= e(setting('home_about_text')) ?></textarea>
+          </div>
+          <div class="form-group">
+            <label>Teks Sambutan Beranda (EN)</label>
+            <textarea name="home_about_text_en" id="home_about_text_en" class="form-control" rows="4"><?= e(setting('home_about_text_en')) ?></textarea>
+            <button type="button" class="btn btn-sm btn-outline-accent js-auto-translate" data-src="#home_about_text" data-target="#home_about_text_en" data-lang="en" title="Terjemahkan otomatis ke Inggris"><i class="fas fa-language mr-1"></i>EN</button>
           </div>
           <div class="form-group">
             <label>Gambar Sambutan Beranda</label>

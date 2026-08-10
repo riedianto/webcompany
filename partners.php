@@ -33,9 +33,9 @@ include __DIR__ . '/includes/sections/page_banner.php';
         <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="<?= ((int)$pt['sort'] % 4) * 80 ?>">
           <a href="<?= e($pt['website'] ?: '#') ?>" target="_blank" rel="noopener" class="partner-logo d-block w-100">
             <?php if ($pt['logo']): ?>
-              <img src="<?= e(img_url('partners', $pt['logo'])) ?>" alt="<?= e($pt['name']) ?>">
+              <img src="<?= e(img_url('partners', $pt['logo'])) ?>" alt="<?= e(pick($pt, 'name')) ?>">
             <?php else: ?>
-              <?= e($pt['name']) ?>
+              <?= e(pick($pt, 'name')) ?>
             <?php endif; ?>
           </a>
         </div>

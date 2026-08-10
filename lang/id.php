@@ -97,7 +97,7 @@ return [
     'services.facilities.eyebrow' => 'Fasilitas',
     'services.facilities.title' => 'Fasilitas Penunjang',
     'services.facilities.sub' => 'Fasilitas modern yang mendukung pelayanan medis terbaik bagi pasien dan keluarga.',
-    'services.readmore' => 'Selengkapnya',
+    'services.readmore' => 'Baca Selengkapnya',
 
     /* ---------- Detail Layanan / Fasilitas ---------- */
     'detail.back' => 'Kembali',
